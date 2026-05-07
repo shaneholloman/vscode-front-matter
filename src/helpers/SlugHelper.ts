@@ -1,5 +1,5 @@
 import { parseWinPath, Settings } from '.';
-import { stopWords, charMap, SETTING_DATE_FORMAT, SETTING_SLUG_TEMPLATE } from '../constants';
+import { stopWords, charMap, SETTING_DATE_FORMAT, SETTING_SLUG_TEMPLATE, SETTING_FILE_SLUG_SEPARATOR } from '../constants';
 import { processTimePlaceholders, processFmPlaceholders } from '.';
 import { parse } from 'path';
 
@@ -26,7 +26,8 @@ export class SlugHelper {
     if (typeof slugTemplate === 'string') {
       if (slugTemplate.includes('{{title}}')) {
         const regex = new RegExp('{{title}}', 'g');
-        slugTemplate = slugTemplate.replace(regex, articleTitle.toLowerCase().replace(/\s/g, '-'));
+        const separator = (Settings.get(SETTING_FILE_SLUG_SEPARATOR) as string) || '-';
+        slugTemplate = slugTemplate.replace(regex, articleTitle.toLowerCase().replace(/\s/g, separator));
       } else if (slugTemplate.includes('{{seoTitle}}')) {
         const regex = new RegExp('{{seoTitle}}', 'g');
         slugTemplate = slugTemplate.replace(regex, SlugHelper.slugify(articleTitle));
@@ -69,7 +70,8 @@ export class SlugHelper {
       let words = cleanTitle.split(/\s/);
       // Removing stop words
       words = this.removeStopWords(words);
-      cleanTitle = words.join('-');
+      const separator = (Settings.get(SETTING_FILE_SLUG_SEPARATOR) as string) || '-';
+      cleanTitle = words.join(separator);
       cleanTitle = this.replaceCharacters(cleanTitle);
       return cleanTitle;
     }

@@ -965,6 +965,12 @@
           "markdownDescription": "%setting.frontMatter.file.preserveCasing.markdownDescription%",
           "scope": "File"
         },
+        "frontMatter.file.slugSeparator": {
+          "type": "string",
+          "default": "-",
+          "markdownDescription": "%setting.frontMatter.file.slugSeparator.markdownDescription%",
+          "scope": "File"
+        },
         "frontMatter.framework.id": {
           "type": "string",
           "default": "",

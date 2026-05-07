@@ -97,6 +97,7 @@ export const SETTING_DATA_FOLDERS = 'data.folders';
 export const SETTING_DATA_TYPES = 'data.types';
 
 export const SETTING_FILE_PRESERVE_CASING = 'file.preserveCasing';
+export const SETTING_FILE_SLUG_SEPARATOR = 'file.slugSeparator';
 
 export const SETTING_FRAMEWORK_ID = 'framework.id';
 export const SETTING_FRAMEWORK_START = 'framework.startCommand';

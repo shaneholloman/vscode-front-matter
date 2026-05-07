@@ -10,6 +10,7 @@ import {
   SETTING_CONTENT_PLACEHOLDERS,
   SETTING_CONTENT_SUPPORTED_FILETYPES,
   SETTING_FILE_PRESERVE_CASING,
+  SETTING_FILE_SLUG_SEPARATOR,
   SETTING_COMMA_SEPARATED_FIELDS,
   SETTING_DATE_FIELD,
   SETTING_DATE_FORMAT,
@@ -660,7 +661,8 @@ export class ArticleHelper {
    */
   public static sanitize(value: string): string {
     const preserveCasing = Settings.get(SETTING_FILE_PRESERVE_CASING) as boolean;
-    return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, '-'));
+    const separator = (Settings.get(SETTING_FILE_SLUG_SEPARATOR) as string) || '-';
+    return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, separator));
   }
 
   /**
