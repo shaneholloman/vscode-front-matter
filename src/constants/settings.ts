@@ -97,6 +97,7 @@ export const SETTING_DATA_FOLDERS = 'data.folders';
 export const SETTING_DATA_TYPES = 'data.types';
 
 export const SETTING_FILE_PRESERVE_CASING = 'file.preserveCasing';
+export const SETTING_FILE_SLUG_SEPARATOR = 'file.slugSeparator';
 
 export const SETTING_FRAMEWORK_ID = 'framework.id';
 export const SETTING_FRAMEWORK_START = 'framework.startCommand';
@@ -117,13 +118,11 @@ export const SETTING_SNIPPETS_WRAPPER = 'snippets.wrapper.enabled';
 export const SETTING_WEBSITE_URL = 'website.host';
 
 export const SETTING_COPILOT_FAMILY = 'copilot.family';
+export const SETTING_COPILOT_ENABLED = 'copilot.enabled';
 
 export const SETTING_LOGGING = 'logging';
 
-/**
- * Sponsors only settings
- */
-export const SETTING_SPONSORS_AI_ENABLED = 'sponsors.ai.enabled';
+export const SETTING_VALIDATION_ENABLED = 'validation.enabled';
 
 /**
  * Project override support

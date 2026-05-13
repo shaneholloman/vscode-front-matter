@@ -4,7 +4,10 @@ import { BaseListener } from './BaseListener';
 import { authentication, window } from 'vscode';
 import { ArticleHelper, Extension, Settings, TaxonomyHelper } from '../../helpers';
 import { BlockFieldData, CustomTaxonomyData, PostMessageData, TaxonomyType } from '../../models';
+import { SETTING_COPILOT_ENABLED } from '../../constants';
 import { DataListener } from '.';
+import { SettingsListener as PanelSettingsListener } from '.';
+import { SettingsListener as DashboardSettingsListener } from '../dashboard';
 import { SponsorAi } from '../../services/SponsorAI';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
@@ -79,6 +82,21 @@ export class TaxonomyListener extends BaseListener {
    */
   private static async copilotSuggestTaxonomy(command: string, requestId?: string, type?: TagType) {
     if (!command || !requestId || !type) {
+      return;
+    }
+
+    // Check if Copilot is enabled and installed
+    const copilotEnabled = Settings.get<boolean>(SETTING_COPILOT_ENABLED) !== false;
+    const isCopilotInstalled = await Copilot.isInstalled();
+
+    if (!copilotEnabled || !isCopilotInstalled) {
+      const extPath = Extension.getInstance().extensionPath;
+      const panel = PanelProvider.getInstance(extPath);
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: l10n.t(LocalizationKey.servicesCopilotGetChatResponseError)
+      } as MessageHandlerData<string[]>);
       return;
     }
 
@@ -279,6 +297,9 @@ export class TaxonomyListener extends BaseListener {
     }
 
     await Settings.updateCustomTaxonomy(data.id, data.option);
+
+    PanelSettingsListener.getSettings();
+    DashboardSettingsListener.getSettings(true);
   }
 
   /**
