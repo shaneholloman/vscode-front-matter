@@ -256,18 +256,14 @@ export class ArticleHelper {
 
     const article = await ArticleHelper.getFrontMatterByPath(filePath);
     if (!article || !article.data) {
-      Notifications.error(
-        l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError)
-      );
+      Notifications.error(l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError));
       return;
     }
 
     const titleField = getTitleField();
     const title: string = article.data[titleField];
     if (!title) {
-      Notifications.warning(
-        l10n.t(LocalizationKey.commandsArticleSmartRenameUnableToGenerate)
-      );
+      Notifications.warning(l10n.t(LocalizationKey.commandsArticleSmartRenameUnableToGenerate));
       return;
     }
 
@@ -304,9 +300,7 @@ export class ArticleHelper {
       const currentFolderName = parseFile(folderPath).base;
 
       if (currentFolderName === newFileName) {
-        Notifications.info(
-          l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync)
-        );
+        Notifications.info(l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync));
         return;
       }
 
@@ -323,11 +317,7 @@ export class ArticleHelper {
       });
 
       Notifications.info(
-        l10n.t(
-          LocalizationKey.commandsArticleSmartRenameSuccess,
-          currentFolderName,
-          newFileName
-        )
+        l10n.t(LocalizationKey.commandsArticleSmartRenameSuccess, currentFolderName, newFileName)
       );
     } else {
       // For regular files, rename the file
@@ -341,9 +331,7 @@ export class ArticleHelper {
       }
 
       if (parsed.base === newFileBase) {
-        Notifications.info(
-          l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync)
-        );
+        Notifications.info(l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync));
         return;
       }
 
@@ -368,11 +356,7 @@ export class ArticleHelper {
       });
 
       Notifications.info(
-        l10n.t(
-          LocalizationKey.commandsArticleSmartRenameSuccess,
-          parsed.base,
-          newFileBase
-        )
+        l10n.t(LocalizationKey.commandsArticleSmartRenameSuccess, parsed.base, newFileBase)
       );
     }
   }
@@ -662,7 +646,8 @@ export class ArticleHelper {
   public static sanitize(value: string): string {
     const preserveCasing = Settings.get(SETTING_FILE_PRESERVE_CASING) as boolean;
     const separator = (Settings.get(SETTING_FILE_SLUG_SEPARATOR) as string) || '-';
-    return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, separator));
+    const sanitized = sanitize(preserveCasing ? value : value.toLowerCase());
+    return sanitized.replace(/ /g, separator);
   }
 
   /**
