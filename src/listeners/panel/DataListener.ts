@@ -479,7 +479,11 @@ export class DataListener extends BaseListener {
     const contentType = await ArticleHelper.getContentType(article);
     const sourceField = ContentType.findFieldByName(contentType.fields, field);
 
-    if (!value && field !== titleField && contentType.clearEmpty) {
+    if (
+      (value === undefined || value === null || value === '' || value === false) &&
+      field !== titleField &&
+      contentType.clearEmpty
+    ) {
       // Check if the draft or boolean field needs to be cleared
       // This is only required when the default value is not set to true
       if (sourceField && (sourceField.type === 'draft' || sourceField.type === 'boolean')) {

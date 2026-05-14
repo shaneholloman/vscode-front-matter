@@ -6,6 +6,10 @@
 
 - [#1030](https://github.com/estruyf/vscode-front-matter/pull/1030): Add `frontMatter.file.slugSeparator` setting
 
+### 🐞 Fixes
+
+- Fix number fields not being saved to front matter when used inside block field groups
+
 ## [10.10.1] - 2026-04-23
 
 ### 🐞 Fixes
