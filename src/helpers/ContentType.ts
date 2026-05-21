@@ -167,31 +167,45 @@ export class ContentType {
       return [];
     }
 
-    // Check if there is a field collection
-    const fcFields = ContentType.findAllFieldsByType(fields || [], 'fieldCollection');
-    if (fcFields.length > 0) {
-      const fieldGroups = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+    const fieldGroups = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS) || [];
+    const mergedFields: Field[] = [];
 
-      if (fieldGroups && fieldGroups.length > 0) {
-        for (const cField of fcFields) {
-          for (const fieldName of cField) {
-            const field = fields.find((f) => f.name === fieldName);
+    for (const field of fields) {
+      if (field.type === 'fieldCollection') {
+        if (typeof field.fieldGroup === 'string') {
+          const fieldGroup = fieldGroups.find((fg) => fg.id === field.fieldGroup);
+          if (fieldGroup?.fields) {
+            mergedFields.push(...ContentType.mergeFields(fieldGroup.fields));
+            continue;
+          }
+        }
 
-            if (field && field.type === 'fieldCollection') {
-              const fieldGroup = fieldGroups.find((fg) => fg.id === field.fieldGroup);
-              if (fieldGroup) {
-                const fieldIdx = fields.findIndex((f) => f.name === field.name);
-                fields.splice(fieldIdx, 1, ...fieldGroup.fields);
-              }
-            } else if (field && field.type === 'fields') {
-              field.fields = field.fields || [];
+        mergedFields.push(field);
+        continue;
+      }
+
+      if (field.type === 'fields') {
+        if ((!field.fields || field.fields.length === 0) && field.fieldGroup) {
+          const groupIds = Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
+
+          for (const groupId of groupIds) {
+            const fieldGroup = fieldGroups.find((fg) => fg.id === groupId);
+            if (fieldGroup?.fields && fieldGroup.fields.length > 0) {
+              field.fields = fieldGroup.fields;
+              break;
             }
           }
         }
+
+        if (field.fields && field.fields.length > 0) {
+          field.fields = ContentType.mergeFields(field.fields);
+        }
       }
+
+      mergedFields.push(field);
     }
 
-    return fields;
+    return mergedFields;
   }
 
   /**

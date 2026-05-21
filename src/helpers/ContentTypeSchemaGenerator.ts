@@ -230,13 +230,18 @@ export class ContentTypeSchemaGenerator {
         };
         break;
 
-      case 'fields':
+      case 'fields': {
         schema.type = 'object';
         schema.properties = {};
         schema.required = [];
 
-        if (field.fields && field.fields.length > 0) {
-          for (const subField of field.fields) {
+        let nestedFields = field.fields;
+        if ((!nestedFields || nestedFields.length === 0) && field.fieldGroup) {
+          nestedFields = this.getFieldGroupFields(field.fieldGroup);
+        }
+
+        if (nestedFields && nestedFields.length > 0) {
+          for (const subField of nestedFields) {
             const subFieldSchema = await this.generateFieldSchema(subField);
             if (subFieldSchema && schema.properties) {
               schema.properties[subField.name] = subFieldSchema;
@@ -253,6 +258,7 @@ export class ContentTypeSchemaGenerator {
           delete schema.required;
         }
         break;
+      }
 
       case 'block': {
         // Block fields can contain different field groups
@@ -378,5 +384,31 @@ export class ContentTypeSchemaGenerator {
     }
 
     return schemas;
+  }
+
+  /**
+   * Resolve fields for a field group reference.
+   * @param fieldGroup Group id(s)
+   * @returns The referenced field definitions
+   */
+  private static getFieldGroupFields(fieldGroup: string | string[]): Field[] {
+    const fieldGroups = Settings.get(SETTING_TAXONOMY_FIELD_GROUPS) as
+      | { id: string; fields: Field[] }[]
+      | undefined;
+
+    if (!fieldGroups || fieldGroups.length === 0) {
+      return [];
+    }
+
+    const groupIds = Array.isArray(fieldGroup) ? fieldGroup : [fieldGroup];
+
+    for (const groupId of groupIds) {
+      const group = fieldGroups.find((fg) => fg.id === groupId);
+      if (group?.fields && group.fields.length > 0) {
+        return group.fields;
+      }
+    }
+
+    return [];
   }
 }

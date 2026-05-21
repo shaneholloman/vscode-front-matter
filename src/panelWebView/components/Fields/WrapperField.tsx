@@ -418,7 +418,21 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else if (field.type === 'fields') {
-    if (field.fields && parent) {
+    let fieldsToRender = field.fields;
+
+    if ((!fieldsToRender || fieldsToRender.length === 0) && field.fieldGroup && settings.fieldGroups) {
+      const groupIds = Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
+
+      for (const groupId of groupIds) {
+        const fieldGroup = settings.fieldGroups.find((group) => group.id === groupId);
+        if (fieldGroup?.fields && fieldGroup.fields.length > 0) {
+          fieldsToRender = fieldGroup.fields;
+          break;
+        }
+      }
+    }
+
+    if (fieldsToRender && parent) {
       if (!parent[field.name]) {
         parent[field.name] = {};
       }
@@ -439,7 +453,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
             )}
 
             {renderFields(
-              field.fields,
+              fieldsToRender,
               subMetadata,
               [...parentFields, field.name],
               blockData,
