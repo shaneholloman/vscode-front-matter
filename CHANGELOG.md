@@ -6,6 +6,7 @@
 
 - Support `fieldGroup` as a single value on `fields` fields
 - [#1030](https://github.com/estruyf/vscode-front-matter/pull/1030): Add `frontMatter.file.slugSeparator` setting
+- [#1033](https://github.com/estruyf/vscode-front-matter/issues/1033): Support freeform tags and categories in the front matter validation
 
 ### 🐞 Fixes
 
