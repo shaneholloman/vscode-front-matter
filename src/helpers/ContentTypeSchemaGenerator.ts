@@ -1,6 +1,10 @@
-import { ContentType, Field, FieldType, CustomTaxonomy } from '../models';
+import { ContentType, Field, CustomTaxonomy } from '../models';
 import { Settings } from '../helpers/SettingsHelper';
-import { SETTING_TAXONOMY_FIELD_GROUPS, SETTING_TAXONOMY_CUSTOM } from '../constants';
+import {
+  SETTING_PANEL_FREEFORM,
+  SETTING_TAXONOMY_FIELD_GROUPS,
+  SETTING_TAXONOMY_CUSTOM
+} from '../constants';
 import { TaxonomyHelper } from './TaxonomyHelper';
 import { TaxonomyType } from '../models/TaxonomyType';
 
@@ -119,6 +123,8 @@ export class ContentTypeSchemaGenerator {
       schema.default = field.default;
     }
 
+    const allowFreeformTaxonomies = Settings.get<boolean>(SETTING_PANEL_FREEFORM) !== false;
+
     // Map field type to JSON Schema type
     switch (field.type) {
       case 'string':
@@ -182,10 +188,12 @@ export class ContentTypeSchemaGenerator {
           type: 'string'
         };
 
-        // Get available tags and add as enum for validation
-        const availableTags = await TaxonomyHelper.get(TaxonomyType.Tag);
-        if (availableTags && availableTags.length > 0) {
-          schema.items.enum = availableTags;
+        if (!allowFreeformTaxonomies) {
+          // Get available tags and add as enum for validation
+          const availableTags = await TaxonomyHelper.get(TaxonomyType.Tag);
+          if (availableTags && availableTags.length > 0) {
+            schema.items.enum = availableTags;
+          }
         }
         break;
       }
@@ -196,10 +204,12 @@ export class ContentTypeSchemaGenerator {
           type: 'string'
         };
 
-        // Get available categories and add as enum for validation
-        const availableCategories = await TaxonomyHelper.get(TaxonomyType.Category);
-        if (availableCategories && availableCategories.length > 0) {
-          schema.items.enum = availableCategories;
+        if (!allowFreeformTaxonomies) {
+          // Get available categories and add as enum for validation
+          const availableCategories = await TaxonomyHelper.get(TaxonomyType.Category);
+          if (availableCategories && availableCategories.length > 0) {
+            schema.items.enum = availableCategories;
+          }
         }
         break;
       }
@@ -210,13 +220,15 @@ export class ContentTypeSchemaGenerator {
           type: 'string'
         };
 
-        // Get custom taxonomy options if taxonomyId is specified
-        if (field.taxonomyId) {
-          const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM);
-          if (customTaxonomies && customTaxonomies.length > 0) {
-            const taxonomy = customTaxonomies.find((t) => t.id === field.taxonomyId);
-            if (taxonomy && taxonomy.options && taxonomy.options.length > 0) {
-              schema.items.enum = taxonomy.options;
+        if (!allowFreeformTaxonomies) {
+          // Get custom taxonomy options if taxonomyId is specified
+          if (field.taxonomyId) {
+            const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM);
+            if (customTaxonomies && customTaxonomies.length > 0) {
+              const taxonomy = customTaxonomies.find((t) => t.id === field.taxonomyId);
+              if (taxonomy && taxonomy.options && taxonomy.options.length > 0) {
+                schema.items.enum = taxonomy.options;
+              }
             }
           }
         }
