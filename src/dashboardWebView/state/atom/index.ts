@@ -8,6 +8,7 @@ export * from './FiltersAtom';
 export * from './FolderAtom';
 export * from './GroupingAtom';
 export * from './LightboxAtom';
+export * from './LastSyncAtom';
 export * from './LoadingAtom';
 export * from './LocaleAtom';
 export * from './LocalesAtom';

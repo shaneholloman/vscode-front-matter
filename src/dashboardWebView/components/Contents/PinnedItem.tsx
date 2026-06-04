@@ -26,39 +26,72 @@ export const PinnedItem: React.FunctionComponent<IPinnedItemProps> = ({
   }, [pageData.fmFilePath]);
 
   return (
-    <li className={cn(`group flex w-full border border-[var(--frontmatter-border)] rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] relative`, isSelected && `border-[var(--frontmatter-border-active)]`)}>
-      <button onClick={onOpenFile} className='relative h-full w-1/3'>
-        {
-          pageData["fmPreviewImage"] ? (
-            <img
-              src={`${pageData["fmPreviewImage"]}`}
-              alt={pageData.title || ""}
-              className="absolute inset-0 h-full w-full object-left-top object-cover group-hover:brightness-75"
-              loading="lazy"
-            />
-          ) : (
-            <div
-              className={`h-full flex items-center justify-center bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)] border-r border-[var(--frontmatter-border)]`}
-            >
-              <MarkdownIcon className={`h-8 text-[var(--vscode-sideBarTitle-foreground)] opacity-80`} />
-            </div>
-          )
-        }
+    <li
+      className={cn(
+        `group relative flex items-center h-14 w-52 flex-shrink-0`,
+        `rounded-[6px] border overflow-hidden`,
+        `transition duration-150 ease-out`,
+        isSelected
+          ? `border-[var(--fm-accent-line)]`
+          : `border-[var(--fm-border)] hover:border-[var(--fm-border-hi)]`
+      )}
+      style={{ backgroundColor: 'var(--fm-surface-2)' }}
+    >
+      {/* Thumbnail */}
+      <button
+        onClick={onOpenFile}
+        className={`relative h-full w-12 flex-shrink-0 overflow-hidden`}
+        style={{ borderRight: '1px solid var(--fm-border)' }}
+      >
+        {pageData['fmPreviewImage'] ? (
+          <img
+            src={`${pageData['fmPreviewImage']}`}
+            alt={pageData.title || ''}
+            className="absolute inset-0 h-full w-full object-cover object-left-top group-hover:brightness-75 transition-[filter] duration-150"
+            loading="lazy"
+          />
+        ) : (
+          <div
+            className={`h-full flex items-center justify-center`}
+            style={{ backgroundColor: 'var(--fm-surface-3)' }}
+          >
+            <MarkdownIcon className={`h-5 opacity-25 text-[var(--fm-text-mid)]`} />
+          </div>
+        )}
       </button>
 
+      {/* Text content */}
+      <button
+        onClick={onOpenFile}
+        className={`flex-1 px-2 text-left min-w-0 overflow-hidden`}
+      >
+        <p
+          className={`text-xs font-semibold truncate`}
+          style={{ color: 'var(--fm-text-hi)' }}
+        >
+          {escapedTitle}
+        </p>
+        {pageData.fmContentType && (
+          <p
+            className={`text-[0.65rem] truncate mt-0.5`}
+            style={{ color: 'var(--fm-text-xlo)' }}
+          >
+            {pageData.fmContentType}
+          </p>
+        )}
+      </button>
+
+      {/* Selection checkbox */}
       <ItemSelection filePath={pageData.fmFilePath} />
 
-      <button onClick={onOpenFile} className='relative w-2/3 p-4 pr-6 text-left flex items-start'>
-        <p className='font-bold'>{escapedTitle}</p>
-
-        <ContentActions
-          path={pageData.fmFilePath}
-          relPath={pageData.fmRelFileWsPath}
-          contentType={pageData.fmContentType}
-          scripts={settings?.scripts}
-          onOpen={openFile}
-        />
-      </button>
+      {/* Context menu */}
+      <ContentActions
+        path={pageData.fmFilePath}
+        relPath={pageData.fmRelFileWsPath}
+        contentType={pageData.fmContentType}
+        scripts={settings?.scripts}
+        onOpen={onOpenFile}
+      />
     </li>
   );
 };

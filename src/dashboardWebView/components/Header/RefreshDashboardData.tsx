@@ -64,7 +64,7 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
       title={l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}
       onClick={refresh}
     >
-      <ArrowClockwiseIcon className={`h-5 w-5`} />
+      <ArrowClockwiseIcon className={`h-4 w-4`} />
       <span className="sr-only">{l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}</span>
     </button>
   );

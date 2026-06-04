@@ -33,10 +33,17 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
   if (settings?.draftField && settings.draftField.type === 'choice') {
     if (draftValue) {
       return (
-        <span
-          className={`inline-block px-[3px] py-[2px] rounded font-semibold uppercase tracking-wide text-[0.7rem] text-[var(--vscode-badge-foreground)] bg-[var(--vscode-badge-background)]`}
-        >
-          {draftValue}
+        <span className={`inline-flex items-center gap-1.5`}>
+          <span
+            className={`w-1.5 h-1.5 rounded-full flex-shrink-0`}
+            style={{ backgroundColor: 'var(--fm-accent)' }}
+          />
+          <span
+            className={`text-[0.7rem] font-medium uppercase tracking-wide`}
+            style={{ color: 'var(--fm-text-mid)' }}
+          >
+            {draftValue as string}
+          </span>
         </span>
       );
     } else {
@@ -48,25 +55,31 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
     return null;
   }
 
+  const dotColor = draftValue
+    ? 'var(--fm-status-draft)'
+    : isFuture
+      ? 'var(--fm-status-scheduled)'
+      : 'var(--fm-status-published)';
+
+  const label = draftValue
+    ? l10n.t(LocalizationKey.dashboardContentsStatusDraft)
+    : isFuture
+      ? l10n.t(LocalizationKey.dashboardContentsStatusScheduled)
+      : l10n.t(LocalizationKey.dashboardContentsStatusPublished);
+
   return (
-    <span
-      className={`draft__status
-        inline-block px-[3px] py-[2px] rounded font-semibold uppercase tracking-wide text-[0.7rem] 
-        ${draftValue ?
-          'bg-[var(--vscode-statusBarItem-errorBackground)] text-[var(--vscode-statusBarItem-errorForeground)]' :
-          isFuture ?
-            'bg-[var(--vscode-statusBarItem-warningBackground)] text-[var(--vscode-statusBarItem-warningForeground)]' :
-            'bg-[var(--vscode-badge-background)] text-[var(--vscode-badge-foreground)]'
-        }`}
-    >
-      {
-        draftValue ?
-          l10n.t(LocalizationKey.dashboardContentsStatusDraft) : (
-            isFuture ?
-              l10n.t(LocalizationKey.dashboardContentsStatusScheduled) :
-              l10n.t(LocalizationKey.dashboardContentsStatusPublished)
-          )
-      }
+    <span className={`draft__status inline-flex items-center gap-1.5`}>
+      <span
+        className={`w-1.5 h-1.5 rounded-full flex-shrink-0`}
+        style={{ backgroundColor: dotColor }}
+        aria-hidden="true"
+      />
+      <span
+        className={`text-[0.7rem] font-medium uppercase tracking-wide`}
+        style={{ color: dotColor }}
+      >
+        {label}
+      </span>
     </span>
   );
 };

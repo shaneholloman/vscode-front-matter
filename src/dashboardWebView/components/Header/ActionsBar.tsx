@@ -192,10 +192,15 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
     return null;
   }, [view, settings?.scripts, selectedFiles]);
 
+  if (selectedFiles.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <div
-        className={`w-full flex items-center justify-between py-2 px-4 border-b bg-[var(--vscode-sideBar-background)] text-[var(--vscode-sideBar-foreground)] border-[var(--frontmatter-border)]`}
+        className={`w-full flex items-center justify-between py-2 px-4 border-b text-[var(--vscode-sideBar-foreground)] border-[var(--frontmatter-border)]`}
+        style={{ backgroundColor: 'var(--fm-accent-soft)', borderTop: '1px solid var(--fm-accent-line)' }}
         aria-label="Item actions"
       >
         <div className='flex items-center space-x-6'>

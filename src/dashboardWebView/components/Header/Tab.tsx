@@ -19,7 +19,7 @@ export const Tab: React.FunctionComponent<ITabProps> = ({
     <button
       className={cn(`h-full flex items-center py-2 px-1 text-sm font-medium text-center border-b-2 border-transparent hover:text-[var(--vscode-tab-activeForeground)] ${location.pathname === `/${navigationType}`
         ?
-        `text-[var(--frontmatter-nav-active)] border-[var(--frontmatter-nav-active)]` :
+        `text-[var(--frontmatter-nav-active)] border-[var(--fm-accent)]` :
         `text-[var(--frontmatter-nav-inactive)]`
         }`)}
       type="button"

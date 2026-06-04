@@ -182,6 +182,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
         label={l10n.t(LocalizationKey.dashboardHeaderSortingLabel)}
         title={crntSort?.title || crntSort?.name || ''}
         disabled={!!searchValue}
+        isActive={crntSorting !== null}
       />
 
       <DropdownMenuContent>

@@ -8,16 +8,17 @@ import { DashboardCommand } from '../../DashboardCommand';
 import { DashboardMessage } from '../../DashboardMessage';
 import {
   LoadingAtom,
+  MediaTotalSelector,
   PageAtom,
   SelectedMediaFolderSelector,
   SettingsSelector,
   SortingSelector
 } from '../../state';
 import { Searchbox } from '../Header';
-import { PaginationStatus } from '../Header/PaginationStatus';
 import { FolderCreation } from './FolderCreation';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { RefreshDashboardData } from '../Header/RefreshDashboardData';
 
 export interface IMediaHeaderTopProps { }
 
@@ -30,6 +31,7 @@ export const MediaHeaderTop: React.FunctionComponent<
   const [, setLoading] = useRecoilState(LoadingAtom);
   const [page, setPage] = useRecoilState(PageAtom);
   const settings = useRecoilValue(SettingsSelector);
+  const totalMedia = useRecoilValue(MediaTotalSelector);
   const debounceGetMedia = useDebounce<string | null>(lastUpdated, 200);
   const prevSelectedFolder = usePrevious<string | null>(selectedFolder);
 
@@ -81,14 +83,29 @@ export const MediaHeaderTop: React.FunctionComponent<
 
   return (
     <nav
-      className={`py-2 px-4 flex items-center justify-between border-b border-[var(--frontmatter-border)]`}
+      className="px-4 py-2 flex items-center justify-between gap-4"
       aria-label="Pagination"
     >
-      <FolderCreation />
+      <div className="flex flex-col min-w-0">
+        <h1 className="text-lg font-semibold leading-tight" style={{ color: 'var(--fm-text-hi)' }}>
+          {l10n.t(LocalizationKey.dashboardHeaderTabsMedia)}
+        </h1>
+        <div className="mt-0.5 flex items-center gap-2 flex-wrap" style={{ color: 'var(--fm-text-lo)' }}>
+          {totalMedia > 0 && (
+            <p className="text-xs leading-tight mt-0.5" style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}>
+              {totalMedia} {totalMedia === 1 ? 'item' : 'items'}{` `}&middot;{` `}
+            </p>
+          )}
 
-      <PaginationStatus />
+          <RefreshDashboardData />
+        </div>
+      </div>
 
-      <Searchbox placeholder={l10n.t(LocalizationKey.dashboardMediaMediaHeaderTopSearchboxPlaceholder)} />
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <Searchbox placeholder={l10n.t(LocalizationKey.dashboardMediaMediaHeaderTopSearchboxPlaceholder)} />
+
+        <FolderCreation />
+      </div>
     </nav>
   );
 };

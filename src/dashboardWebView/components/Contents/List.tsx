@@ -14,15 +14,20 @@ export const List: React.FunctionComponent<IListProps> = ({
 
   let className = '';
   if (view === DashboardViewType.Grid) {
-    className = `grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4`;
+    className = `grid gap-4`;
+    // inline style is set on the element below via style prop
   } else if (view === DashboardViewType.List) {
     className = `-mx-4`;
   } else if (view === DashboardViewType.Structure) {
     className = `structure-view`;
   }
 
+  const gridStyle = view === DashboardViewType.Grid
+    ? { gridTemplateColumns: 'repeat(auto-fill, minmax(264px, 1fr))' }
+    : undefined;
+
   return (
-    <ul role="list" className={className}>
+    <ul role="list" className={className} style={gridStyle}>
       {view === DashboardViewType.List && (
         <li className={`px-5 relative uppercase py-2 border-b text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
           <div className={`grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8`}>

@@ -12,6 +12,7 @@ import { OpenOnWebsiteAction } from './Actions/OpenOnWebsiteAction';
 import useContentType from '../../hooks/useContentType';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { CommandToCode } from '../CommandToCode';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 export interface IActionsProps {
   metadata?: any;

@@ -6,7 +6,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
-import { GroupingSelector, MultiSelectedItemsAtom, SortingAtom } from '../../state';
+import { AllPagesAtom, LastSyncAtom, MultiSelectedItemsAtom, SortingAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
@@ -19,10 +19,6 @@ import { HeartIcon } from '@heroicons/react/24/solid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import { useMemo } from 'react';
-import { Pagination } from './Pagination';
-import { GroupOption } from '../../constants/GroupOption';
-import usePagination from '../../hooks/usePagination';
-import { PaginationStatus } from './PaginationStatus';
 import { Navigation } from './Navigation';
 import { ProjectSwitcher } from './ProjectSwitcher';
 import * as l10n from '@vscode/l10n';
@@ -33,6 +29,7 @@ import { COMMAND_NAME, GeneralCommands, SPONSOR_LINK } from '../../../constants'
 import { Filters } from './Filters';
 import { ActionsBar } from './ActionsBar';
 import { RefreshDashboardData } from './RefreshDashboardData';
+import { useRelativeTime } from '../../hooks/useRelativeTime';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -47,15 +44,15 @@ export interface IHeaderProps {
 
 export const Header: React.FunctionComponent<IHeaderProps> = ({
   header,
-  totalPages,
   settings
 }: React.PropsWithChildren<IHeaderProps>) => {
-  const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
   const resetSelectedItems = useResetRecoilState(MultiSelectedItemsAtom);
   const location = useLocation();
   const navigate = useNavigate();
-  const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
+  const allPages = useRecoilValue(AllPagesAtom);
+  const lastSync = useRecoilValue(LastSyncAtom);
+  const syncLabel = useRelativeTime(lastSync);
 
   const createContent = () => {
     Messenger.send(DashboardMessage.createContent);
@@ -173,54 +170,54 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
 
       {location.pathname === routePaths.contents && (
         <>
-          <div className={`px-4 mt-2 mb-2 flex items-center justify-between`}>
-            <div className={`flex items-center justify-start space-x-2 flex-1`}>
+          {/* Title row: heading + count/sync status | search + create */}
+          <div className={`px-4 py-2 flex items-center justify-between gap-4`}>
+            <div className={`flex flex-col min-w-0`}>
+              <h1 className={`text-lg font-semibold leading-tight`} style={{ color: 'var(--fm-text-hi)' }}>
+                {l10n.t(LocalizationKey.dashboardHeaderTabsContents)}
+              </h1>
+              <div className={`flex items-center gap-2 flex-wrap`} style={{ color: 'var(--fm-text-lo)' }}>
+                {allPages.length > 0 && (
+                  <p className={`text-xs leading-tight mt-0.5`} style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}>
+                    {allPages.length} {allPages.length === 1 ? 'item' : 'items'}
+                    {syncLabel ? <> &middot; synced {syncLabel}</> : null}
+                    {` `}&middot;{` `}
+                  </p>
+                )}
+                <RefreshDashboardData />
+              </div>
+            </div>
+
+            <div className={`flex items-center gap-2 flex-shrink-0`}>
+              <Searchbox placeholder={l10n.t(LocalizationKey.commonSearch) + ' content...'} />
+
               <ChoiceButton
                 title={l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
                 choices={choiceOptions}
                 onClick={createContent}
                 disabled={!settings?.initialized}
               />
-
-              <RefreshDashboardData />
             </div>
-
-            <Searchbox />
           </div>
 
-          <div className={`px-4 flex flex-row items-center border-b justify-between border-[var(--frontmatter-border)]`}>
-            <div>
-              <Navigation totalPages={totalPages || 0} />
-            </div>
+          {/* Combined filter row: nav tabs | filters + grouping + sorting + view switch */}
+          <div className={`overflow-x-auto px-4 py-1.5 flex items-center justify-between gap-2 border-b border-[var(--frontmatter-border)]`}>
+            <Navigation />
 
-            <div>
+            <div className={`flex items-center gap-4 flex-shrink-0`}>
+              <ClearFilters />
+
+              <Filters />
+
+              <Grouping />
+
+              <Sorting view={NavigationType.Contents} />
+
+              <div className="h-5 w-px flex-shrink-0" style={{ backgroundColor: 'var(--frontmatter-border)' }} aria-hidden="true" />
+
               <ViewSwitch />
             </div>
           </div>
-
-          <div
-            className={`overflow-x-auto py-2 px-4 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 bg-[var(--vscode-panel-background)] border-[var(--frontmatter-border)]`}
-          >
-            <ClearFilters />
-
-            <Filters />
-
-            <Grouping />
-
-            <Sorting view={NavigationType.Contents} />
-          </div>
-
-          {pageSetNr > 0 &&
-            (totalPages || 0) > pageSetNr &&
-            (!grouping || grouping === GroupOption.none) && (
-              <div
-                className={`px-4 flex justify-between py-2 border-b border-[var(--frontmatter-border)]`}
-              >
-                <PaginationStatus totalPages={totalPages || 0} />
-
-                <Pagination totalPages={totalPages || 0} />
-              </div>
-            )}
 
           <ActionsBar view={NavigationType.Contents} />
         </>

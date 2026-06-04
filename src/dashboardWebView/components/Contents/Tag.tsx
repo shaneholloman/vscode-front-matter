@@ -21,15 +21,28 @@ export const Tag: React.FunctionComponent<ITagProps> = ({
 
   return (
     <button
-      className={`inline-block mr-1 mt-1 text-xs text-[var(--vscode-button-secondaryForeground)] bg-[var(--vscode-button-secondaryBackground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)] border border-[var(--frontmatter-border)] rounded px-1 py-0.5`}
+      className={`flex-shrink-0 inline-block text-[0.65rem] font-medium px-1.5 py-0.5 rounded transition-colors duration-100`}
+      style={{
+        color: 'var(--fm-text-lo)',
+        backgroundColor: 'var(--fm-surface-3)',
+        border: '1px solid var(--fm-border)'
+      }}
       title={l10n.t(LocalizationKey.commonFilterValue, value)}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.color = 'var(--fm-text-mid)';
+        (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--fm-surface-4)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.color = 'var(--fm-text-lo)';
+        (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--fm-surface-3)';
+      }}
       onClick={() => {
         if (tagField) {
           navigate(`${routePaths.contents}?taxonomy=${tagField}&value=${value}`);
         }
       }}
     >
-      #{value}
+      {value}
     </button>
   );
 };

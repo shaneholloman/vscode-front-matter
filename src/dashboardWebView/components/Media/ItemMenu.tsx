@@ -22,6 +22,7 @@ export interface IItemMenuProps {
   showMediaDetails: () => void;
   processSnippet: (snippet: Snippet) => void;
   onDelete: () => void;
+  onMenuOpenChange?: (open: boolean) => void;
 }
 
 export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
@@ -36,6 +37,7 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
   showMediaDetails,
   processSnippet,
   onDelete,
+  onMenuOpenChange,
 }: React.PropsWithChildren<IItemMenuProps>) => {
 
   const onCopyToClipboard = React.useCallback(() => {
@@ -50,23 +52,21 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
   }, [selectedFolder]);
 
   return (
-    <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
-      <div className={`flex items-center border border-transparent rounded-full p-1 -mr-2 -mt-1 group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`}>
-        <div className="relative z-10 flex text-left">
-          <DropdownMenu>
-            <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'>
-              <span className="sr-only">{l10n.t(LocalizationKey.commonMenu)}</span>
-              <EllipsisHorizontalIcon className="w-4 h-4" aria-hidden="true" />
-            </DropdownMenuTrigger>
+    <div className="absolute top-2 right-2 z-10 flex">
+      <DropdownMenu onOpenChange={onMenuOpenChange}>
+        <DropdownMenuTrigger className="relative flex h-8 w-8 items-center justify-center rounded-[8px] border border-[var(--fm-border)] bg-[var(--fm-surface-2)]/95 text-[var(--fm-text-lo)] backdrop-blur-sm transition-colors hover:bg-[var(--fm-surface-3)] hover:text-[var(--fm-text-hi)] data-[state=open]:bg-[var(--fm-surface-3)] data-[state=open]:text-[var(--fm-text-hi)] focus:outline-none">
+          <span className="sr-only">{l10n.t(LocalizationKey.commonMenu)}</span>
+          <EllipsisHorizontalIcon className="w-4 h-4" aria-hidden="true" />
+        </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={showMediaDetails}>
-                <EyeIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                <EyeIcon className="h-4 w-4" aria-hidden={true} />
                 <span>{l10n.t(LocalizationKey.commonView)}</span>
               </DropdownMenuItem>
 
               <DropdownMenuItem onClick={showUpdateMedia}>
-                <PencilIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                <PencilIcon className="h-4 w-4" aria-hidden={true} />
                 <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
               </DropdownMenuItem>
 
@@ -74,7 +74,7 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
                 viewData?.filePath ? (
                   <>
                     <DropdownMenuItem onClick={insertIntoArticle}>
-                      <PlusIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                      <PlusIcon className="h-4 w-4" aria-hidden={true} />
                       <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemInsertImage)}</span>
                     </DropdownMenuItem>
 
@@ -84,7 +84,7 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
                       snippets.map((snippet, idx) => (
                         <DropdownMenuItem key={idx} onClick={() => processSnippet(snippet)}>
                           <CodeBracketIcon
-                            className="mr-2 h-4 w-4"
+                            className="h-4 w-4"
                             aria-hidden={true}
                           />
                           <span>{snippet.title}</span>
@@ -94,7 +94,7 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
                   </>
                 ) : (
                   <DropdownMenuItem onClick={onCopyToClipboard}>
-                    <ClipboardIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                    <ClipboardIcon className="h-4 w-4" aria-hidden={true} />
                     <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
                   </DropdownMenuItem>
                 )
@@ -105,18 +105,16 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
                 scripts={scripts} />
 
               <DropdownMenuItem onClick={revealMedia}>
-                <EyeIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                <EyeIcon className="h-4 w-4" aria-hidden={true} />
                 <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemRevealMedia)}</span>
               </DropdownMenuItem>
 
               <DropdownMenuItem onClick={onDelete} className={`focus:bg-[var(--vscode-statusBarItem-errorBackground)] focus:text-[var(--vscode-statusBarItem-errorForeground)]`}>
-                <TrashIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                <TrashIcon className="h-4 w-4" aria-hidden={true} />
                 <span>{l10n.t(LocalizationKey.commonDelete)}</span>
               </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

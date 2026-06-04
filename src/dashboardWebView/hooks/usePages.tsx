@@ -17,6 +17,7 @@ import {
   TabSelector,
   TagSelector
 } from '../state';
+import { LastSyncAtom } from '../state';
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
@@ -30,6 +31,7 @@ import { usePrevious } from '../../panelWebView/hooks/usePrevious';
 export default function usePages(pages: Page[]) {
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
   const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
+  const [, setLastSync] = useRecoilState(LastSyncAtom);
   const [sorting, setSorting] = useRecoilState(SortingAtom);
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
   const [locales, setLocales] = useRecoilState(LocalesAtom);
@@ -226,6 +228,7 @@ export default function usePages(pages: Page[]) {
 
       // Set the pages
       setPageItems(crntPages);
+      setLastSync(Date.now());
     },
     [tab, tabInfo, settings, filters, locales, tabPrevious]
   );

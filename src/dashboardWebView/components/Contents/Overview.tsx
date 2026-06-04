@@ -195,35 +195,41 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
   }
 
   return (
-    <div className='divide-y divide-[var(--frontmatter-border)]'>
-      {
-        pinnedPages.length > 0 && (
-          <div className='mb-8'>
-            <h1 className='text-xl flex space-x-2 items-center mb-4'>
-              <PinIcon className={`-rotate-45`} />
-              <span>{localize(LocalizationKey.dashboardContentsOverviewPinned)}</span>
+    <div className='divide-y divide-[var(--fm-border)]'>
+      {pinnedPages.length > 0 && (
+        <div className='mb-6'>
+          <h2
+            className='flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-widest'
+            style={{ color: 'var(--fm-text-xlo)' }}
+          >
+            <PinIcon className={`-rotate-45 w-3 h-3`} />
+            <span>{localize(LocalizationKey.dashboardContentsOverviewPinned)}</span>
+          </h2>
 
-            </h1>
+          {view === DashboardViewType.List ? (
             <List>
               {pinnedPages.map((page, idx) => (
-                view === DashboardViewType.List ? (
-                  <Item key={`${page.slug}-${idx}`} {...page} />
-                ) : (
-                  <PinnedItem key={`${page.slug}-${idx}`} {...page} />
-                )
+                <Item key={`${page.slug}-${idx}`} {...page} />
               ))}
             </List>
-          </div>
-        )
-      }
+          ) : (
+            <ul role="list" className="flex flex-wrap gap-2">
+              {pinnedPages.map((page, idx) => (
+                <PinnedItem key={`${page.slug}-${idx}`} {...page} />
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
-      <div className={pinnedItems.length > 0 ? "pt-8" : ""}>
+      <div className={pinnedItems.length > 0 ? 'pt-6' : ''}>
         <List>
           {pagedPages.map((page, idx) => (
             <Item key={`${page.slug}-${idx}`} {...page} />
           ))}
         </List>
       </div>
+
     </div>
   );
 };

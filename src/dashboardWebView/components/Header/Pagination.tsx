@@ -28,26 +28,39 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
   const buttons = useMemo((): JSX.Element[] => {
     const maxButtons = 5;
     const buttons: JSX.Element[] = [];
-    const start = page - maxButtons;
-    const end = page + maxButtons;
+    const start = Math.max(0, page - Math.floor(maxButtons / 2));
+    const end = Math.min(totalPagesNr, start + maxButtons - 1);
 
-    for (let i = start; i < end; i++) {
-      if (i >= 0 && i <= totalPagesNr) {
-        buttons.push(
-          <button
-            key={i}
-            disabled={i === page}
-            onClick={() => {
-              setPage(i);
-            }}
-            className={`max-h-8 rounded ${page === i
-              ? `px-2 bg-[var(--vscode-list-activeSelectionBackground)] text-[var(--vscode-list-activeSelectionForeground)]`
-              : `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)]`}`}
-          >
-            {i + 1}
-          </button>
-        );
-      }
+    for (let i = start; i <= end; i++) {
+      const isActive = i === page;
+      buttons.push(
+        <button
+          key={i}
+          disabled={isActive}
+          onClick={() => setPage(i)}
+          className={`min-w-[28px] h-7 px-1.5 rounded-[6px] text-sm font-medium transition-colors duration-100`}
+          style={{
+            fontFamily: 'var(--fm-mono)',
+            backgroundColor: isActive ? 'var(--fm-accent)' : 'transparent',
+            color: isActive ? 'var(--fm-accent-ink)' : 'var(--fm-text-lo)',
+            cursor: isActive ? 'default' : 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            if (!isActive) {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--fm-surface-3)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--fm-text-mid)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isActive) {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--fm-text-lo)';
+            }
+          }}
+        >
+          {i + 1}
+        </button>
+      );
     }
     return buttons;
   }, [page, totalPagesNr]);
@@ -65,17 +78,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
   }
 
   return (
-    <div className="flex justify-between items-center sm:justify-end space-x-2 text-sm">
-      <PaginationButton
-        title={l10n.t(LocalizationKey.dashboardHeaderPaginationFirst)}
-        disabled={page === 0}
-        onClick={() => {
-          if (page > 0) {
-            setPage(0);
-          }
-        }}
-      />
-
+    <div className="flex justify-between items-center sm:justify-end gap-1 text-sm">
       <PaginationButton
         title={l10n.t(LocalizationKey.dashboardHeaderPaginationPrevious)}
         disabled={page === 0}
@@ -92,12 +95,6 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
         title={l10n.t(LocalizationKey.dashboardHeaderPaginationNext)}
         disabled={page >= totalPagesNr}
         onClick={() => setPage(page + 1)}
-      />
-
-      <PaginationButton
-        title={l10n.t(LocalizationKey.dashboardHeaderPaginationLast)}
-        disabled={page >= totalPagesNr}
-        onClick={() => setPage(totalPagesNr)}
       />
     </div>
   );

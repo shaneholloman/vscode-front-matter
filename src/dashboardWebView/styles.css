@@ -3,6 +3,87 @@
 @import 'tailwindcss/utilities';
 
 :root {
+  /* FM accent tokens — driven by VS Code button color, never hardcoded */
+  --fm-accent: var(--vscode-button-background);
+  --fm-accent-ink: var(--vscode-button-foreground);
+  --fm-accent-hi: color-mix(in srgb, var(--fm-accent) 80%, white);
+  --fm-accent-soft: color-mix(in srgb, var(--fm-accent) 14%, transparent);
+  --fm-accent-line: color-mix(in srgb, var(--fm-accent) 32%, transparent);
+
+  /* Theme-driven surfaces */
+  --fm-bg: var(--vscode-editor-background);
+  --fm-surface-1: color-mix(
+    in srgb,
+    var(--vscode-editor-background) 88%,
+    var(--vscode-sideBar-background) 12%
+  );
+  --fm-surface-2: color-mix(
+    in srgb,
+    var(--vscode-editor-background) 76%,
+    var(--vscode-sideBar-background) 24%
+  );
+  --fm-surface-3: color-mix(
+    in srgb,
+    var(--vscode-editor-background) 62%,
+    var(--vscode-sideBar-background) 38%
+  );
+  --fm-surface-4: color-mix(
+    in srgb,
+    var(--vscode-editor-background) 48%,
+    var(--vscode-sideBar-background) 52%
+  );
+
+  /* When sidebar and editor share the same color the sidebar-mix above produces zero contrast.
+     Override per theme class to guarantee visible card lift using white (dark) or black (light). */
+  .vscode-dark {
+    --fm-surface-1: color-mix(in srgb, var(--vscode-sideBar-background) 96%, white);
+    --fm-surface-2: color-mix(in srgb, var(--vscode-sideBar-background) 90%, white);
+    --fm-surface-3: color-mix(in srgb, var(--vscode-sideBar-background) 84%, white);
+    --fm-surface-4: color-mix(in srgb, var(--vscode-sideBar-background) 78%, white);
+  }
+
+  .vscode-light {
+    --fm-surface-1: color-mix(in srgb, var(--vscode-editor-background) 97%, black);
+    --fm-surface-2: color-mix(in srgb, var(--vscode-editor-background) 93%, black);
+    --fm-surface-3: color-mix(in srgb, var(--vscode-editor-background) 89%, black);
+    --fm-surface-4: color-mix(in srgb, var(--vscode-editor-background) 85%, black);
+  }
+
+  /* Theme-driven borders */
+  --fm-border: var(--vscode-panel-border, var(--vscode-sideBar-border, rgba(127, 127, 127, 0.25)));
+  --fm-border-soft: color-mix(in srgb, var(--fm-border) 70%, transparent);
+  --fm-border-hi: color-mix(
+    in srgb,
+    var(--vscode-focusBorder, var(--fm-border)) 30%,
+    var(--fm-border) 70%
+  );
+
+  /* Theme-driven text hierarchy */
+  --fm-text-hi: var(--vscode-editor-foreground);
+  --fm-text-mid: color-mix(
+    in srgb,
+    var(--vscode-editor-foreground) 72%,
+    var(--vscode-descriptionForeground, var(--vscode-editor-foreground)) 28%
+  );
+  --fm-text-lo: var(
+    --vscode-descriptionForeground,
+    color-mix(in srgb, var(--vscode-editor-foreground) 55%, transparent)
+  );
+  --fm-text-xlo: color-mix(
+    in srgb,
+    var(--vscode-descriptionForeground, var(--vscode-editor-foreground)) 72%,
+    transparent
+  );
+
+  /* Theme-driven status colors */
+  --fm-status-published: var(--vscode-terminal-ansiGreen, #59b888);
+  --fm-status-draft: var(--vscode-terminal-ansiYellow, #c79a4b);
+  --fm-status-scheduled: var(--vscode-terminal-ansiBlue, #6b9fd4);
+  --fm-status-danger: var(--vscode-terminal-ansiRed, #e06c75);
+
+  /* Mono stack */
+  --fm-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+
   /* Bool field */
   --frontmatter-toggle-background: #15c2cb;
   --frontmatter-toggle-secondaryBackground: #adadad;

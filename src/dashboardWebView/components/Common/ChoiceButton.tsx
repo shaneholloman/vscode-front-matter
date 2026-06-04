@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { MenuItem } from '../Menu';
 import * as l10n from '@vscode/l10n';
@@ -28,11 +28,12 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
     <span className="relative z-50 inline-flex shadow-sm rounded-md">
       <button
         type="button"
-        className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium ${choices.length > 0 ? `rounded-l` : `rounded`
+        className={`inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium ${choices.length > 0 ? `rounded-l` : `rounded`
           } text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}
         onClick={onClick}
         disabled={disabled}
       >
+        <PlusIcon className="w-4 h-4 mr-2" />
         {title}
       </button>
 
@@ -40,7 +41,7 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
       {choices.length > 0 && (
         <DropdownMenu>
           <DropdownMenuTrigger
-            className='h-full inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium focus:outline-none  rounded-r text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50'
+            className='inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium focus:outline-none rounded-r text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50'
             disabled={disabled}>
             <span className="sr-only">{l10n.t(LocalizationKey.dashboardCommonChoiceButtonOpen)}</span>
             <ChevronDownIcon className={`h-4 w-4`} aria-hidden="true" />
