@@ -27,6 +27,8 @@ import { ExtensionState, GeneralCommands } from '../../constants';
 import { SortingOption } from '../models';
 import { I18nConfig } from '../../models';
 import { usePrevious } from '../../panelWebView/hooks/usePrevious';
+import { getSortingOptions, resolveSortingOption } from '../utils';
+import { NavigationType } from '../models/NavigationType';
 
 export default function usePages(pages: Page[]) {
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
@@ -266,6 +268,19 @@ export default function usePages(pages: Page[]) {
           setSorting(value);
           return;
         } else {
+          const fallbackSorting = resolveSortingOption({
+            currentSorting: null,
+            persistedSorting: value || null,
+            settings: settings || null,
+            view: NavigationType.Contents,
+            allOptions: getSortingOptions(NavigationType.Contents, settings?.customSorting)
+          });
+
+          if (fallbackSorting) {
+            setSorting(fallbackSorting);
+            return;
+          }
+
           startPageProcessing();
         }
       });

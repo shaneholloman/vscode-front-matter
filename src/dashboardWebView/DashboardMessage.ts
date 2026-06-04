@@ -79,6 +79,7 @@ export enum DashboardMessage {
   updateSetting = 'updateSetting',
   setState = 'setState',
   getState = 'getState',
+  clearState = 'clearState',
   runCustomScript = 'runCustomScript',
   showNotification = 'showNotification',
   setTitle = 'setTitle',

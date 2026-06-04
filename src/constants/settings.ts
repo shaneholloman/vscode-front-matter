@@ -84,6 +84,7 @@ export const SETTING_MEDIA_CONTENTTYPES = 'media.contentTypes';
 export const SETTING_DASHBOARD_OPENONSTART = 'dashboard.openOnStart';
 export const SETTING_DASHBOARD_CONTENT_TAGS = 'dashboard.content.cardTags';
 export const SETTING_DASHBOARD_CONTENT_PAGINATION = 'dashboard.content.pagination';
+export const SETTING_DASHBOARD_CONTENT_DEFAULTS = 'dashboard.content.defaults';
 
 // Content cards
 export const SETTING_DASHBOARD_CONTENT_CARD_STATE = 'dashboard.content.card.fields.state';

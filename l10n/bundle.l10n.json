@@ -211,6 +211,7 @@
   "dashboard.header.sorting.alt.asc": "Alt (asc)",
   "dashboard.header.sorting.alt.desc": "Alt (desc)",
   "dashboard.header.sorting.label": "Sort by",
+  "dashboard.header.sorting.default": "Default",
 
   "dashboard.header.startup.label": "Open on startup?",
 

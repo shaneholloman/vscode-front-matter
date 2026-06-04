@@ -726,6 +726,28 @@
           "markdownDescription": "%setting.frontMatter.dashboard.content.pagination.markdownDescription%",
           "scope": "Dashboard"
         },
+        "frontMatter.dashboard.content.defaults": {
+          "type": "object",
+          "markdownDescription": "%setting.frontMatter.dashboard.content.defaults.markdownDescription%",
+          "scope": "Dashboard",
+          "properties": {
+            "sorting": {
+              "type": "string",
+              "description": "%setting.frontMatter.dashboard.content.defaults.properties.sorting.description%"
+            },
+            "grouping": {
+              "type": "string",
+              "description": "%setting.frontMatter.dashboard.content.defaults.properties.grouping.description%"
+            },
+            "filters": {
+              "type": "object",
+              "description": "%setting.frontMatter.dashboard.content.defaults.properties.filters.description%",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        },
         "frontMatter.dashboard.content.cardTags": {
           "type": "string",
           "default": "tags",

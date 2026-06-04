@@ -696,6 +696,10 @@ export enum LocalizationKey {
    */
   dashboardHeaderSortingLabel = 'dashboard.header.sorting.label',
   /**
+   * Default
+   */
+  dashboardHeaderSortingDefault = 'dashboard.header.sorting.default',
+  /**
    * Open on startup?
    */
   dashboardHeaderStartupLabel = 'dashboard.header.startup.label',

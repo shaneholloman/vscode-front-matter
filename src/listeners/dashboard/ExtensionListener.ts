@@ -27,15 +27,25 @@ export class ExtensionListener extends BaseListener {
       case DashboardMessage.setState:
         this.setState(msg?.payload);
         break;
+      case DashboardMessage.clearState:
+        this.clearState(msg?.payload);
+        break;
       case DashboardMessage.getState:
         this.getState(msg.command, msg?.payload, msg.requestId);
         break;
     }
   }
 
+  private static clearState(data: any) {
+    const { key } = data;
+    if (key) {
+      Extension.getInstance().setState(key, undefined, 'workspace');
+    }
+  }
+
   private static setState(data: any) {
     const { key, value } = data;
-    if (key && value) {
+    if (key && typeof value !== 'undefined') {
       Extension.getInstance().setState(key, value, 'workspace');
     }
   }
