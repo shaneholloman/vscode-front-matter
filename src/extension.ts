@@ -191,10 +191,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Open docs
   subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.docs, () => {
+    vscode.commands.registerCommand(COMMAND_NAME.docs, (path?: string) => {
+      const docsPath = typeof path === 'string' ? path : '';
       vscode.commands.executeCommand(
         `workbench.action.browser.open`,
-        `https://${extension.isBetaVersion() ? `beta.` : ``}frontmatter.codes/docs`
+        `https://${extension.isBetaVersion() ? `beta.` : ``}frontmatter.codes/docs${docsPath}`
       );
     })
   );

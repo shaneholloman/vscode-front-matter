@@ -1,10 +1,13 @@
 import * as React from 'react';
+import { Messenger } from '@estruyf/vscode/dist/client';
+import type { PaneAction } from 'vscrui';
 import { Collapsible } from '../Collapsible';
 import { VSCodeTable, VSCodeTableBody } from '../VSCode/VSCodeTable';
 import { ReadabilityScore } from './ReadabilityScore';
 import { FreshnessWarning } from './FreshnessWarning';
 import { InternalLinks } from './InternalLinks';
 import { BrokenExternalLinks } from './BrokenExternalLinks';
+import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 import { LocalizationKey, localize } from '../../../localization';
 import type { LinkValidationResult } from '../../../helpers/LinkValidator';
 import type { ReadabilityResult } from '../../../helpers/ReadabilityHelper';
@@ -22,9 +25,23 @@ interface Props {
 }
 
 const ContentHealth: React.FunctionComponent<Props> = ({ contentHealth }) => {
+  const openContentHealthDocs = React.useCallback(() => {
+    Messenger.send(GeneralCommands.toVSCode.runCommand, {
+      command: COMMAND_NAME.docs,
+      args: '/panel#content-health'
+    });
+  }, []);
+
+  const actions = React.useMemo<PaneAction[]>(() => ([
+    {
+      iconName: 'book',
+      onClick: openContentHealthDocs
+    }
+  ]), [openContentHealthDocs]);
+
   if (contentHealth === undefined) {
     return (
-      <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)}>
+      <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)} actions={actions}>
         <p className='opacity-60'>{localize(LocalizationKey.panelContentHealthChecking)}</p>
       </Collapsible>
     );
@@ -39,7 +56,7 @@ const ContentHealth: React.FunctionComponent<Props> = ({ contentHealth }) => {
     (readability && minReadability > 0 && readability.score < minReadability);
 
   return (
-    <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)}>
+    <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)} actions={actions}>
       <div className='space-y-2'>
         <VSCodeTable>
           <VSCodeTableBody>

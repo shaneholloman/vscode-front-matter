@@ -2,13 +2,14 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useEffect, useMemo } from 'react';
 import { Command } from '../Command';
-import { Pane as VSCodePane } from 'vscrui';
+import { Pane as VSCodePane, type PaneAction } from 'vscrui';
 
 export interface ICollapsibleProps {
   id: string;
   title: string;
   className?: string;
   sendUpdate?: (open: boolean) => void;
+  actions?: PaneAction[];
 }
 
 const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
@@ -16,7 +17,8 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
   children,
   title,
   sendUpdate,
-  className
+  className,
+  actions
 }: React.PropsWithChildren<ICollapsibleProps>) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const collapseKey = useMemo(() => `collapse_${id}`, [id]);
@@ -71,7 +73,9 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
     <VSCodePane
       title={title}
       onClick={triggerClick}
-      open={isOpen}>
+      open={isOpen}
+      actions={actions}
+    >
       <div className={`section collapsible__body overflow-y-auto ${className || ''}`}>
         {children}
       </div>
