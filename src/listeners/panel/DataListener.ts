@@ -180,7 +180,7 @@ export class DataListener extends BaseListener {
       `You are helping me improve readability for this article.`,
       objective,
       `Preserve meaning, markdown structure, links, code blocks, and front matter unchanged.`,
-      `Return revised markdown body suggestions and explain key edits.`
+      `Update the article content and explain the key edits you made.`
     ].join('\n\n');
 
     try {

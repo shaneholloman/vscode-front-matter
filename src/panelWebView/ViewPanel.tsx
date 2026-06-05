@@ -32,7 +32,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
     folderAndFiles,
     focusElm,
     unsetFocus,
-    mode
+    mode,
+    contentHealth
   } = useMessages();
   const prevMediaSelection = usePrevious(mediaSelecting);
   const [scrollY, setScrollY] = useState(0);
@@ -130,9 +131,9 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
         </FeatureFlag>
 
         {
-          !loading && metadata?.contentHealth && (
+          !loading && metadata && (
             <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.contentHealth}>
-              <ContentHealth contentHealth={metadata.contentHealth} />
+              <ContentHealth contentHealth={contentHealth} />
             </FeatureFlag>
           )
         }

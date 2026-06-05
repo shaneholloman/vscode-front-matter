@@ -1725,6 +1725,10 @@ export enum LocalizationKey {
    */
   panelContentHealthNoIssues = 'panel.contentHealth.noIssues',
   /**
+   * Analyzing content health...
+   */
+  panelContentHealthChecking = 'panel.contentHealth.checking',
+  /**
    * Readability
    */
   panelContentHealthReadabilityLabel = 'panel.contentHealth.readability.label',
@@ -1749,7 +1753,7 @@ export enum LocalizationKey {
    */
   panelContentHealthReadabilityLevelVeryDifficult = 'panel.contentHealth.readability.level.veryDifficult',
   /**
-   * (below threshold)
+   * (below threshold - {0})
    */
   panelContentHealthReadabilityBelowThreshold = 'panel.contentHealth.readability.belowThreshold',
   /**

@@ -14,6 +14,8 @@ import { PanelSettingsAtom } from '../state';
 export default function useMessages() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [metadata, setMetadata] = useState<any>(undefined);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [contentHealth, setContentHealth] = useState<any>(undefined);
   const [settings, setSettings] = useRecoilState(PanelSettingsAtom);
   const [loading, setLoading] = useState<boolean>(false);
   const [focusElm, setFocus] = useState<TagType | null>(null);
@@ -33,10 +35,11 @@ export default function useMessages() {
     switch (message.command) {
       case Command.metadata:
         setMetadata(message.payload);
+        setContentHealth(undefined);
         setLoading(false);
         break;
       case Command.contentHealth:
-        setMetadata((prev: any) => prev ? { ...prev, contentHealth: message.payload } : prev);
+        setContentHealth(message.payload);
         break;
       case Command.settings:
         setSettings(message.payload);
@@ -95,6 +98,7 @@ export default function useMessages() {
 
   return {
     metadata,
+    contentHealth,
     settings,
     folderAndFiles,
     focusElm,

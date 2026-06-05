@@ -18,12 +18,16 @@ interface ContentHealthData {
 }
 
 interface Props {
-  contentHealth: ContentHealthData;
+  contentHealth: ContentHealthData | undefined;
 }
 
 const ContentHealth: React.FunctionComponent<Props> = ({ contentHealth }) => {
-  if (!contentHealth) {
-    return null;
+  if (contentHealth === undefined) {
+    return (
+      <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)}>
+        <p className='opacity-60'>{localize(LocalizationKey.panelContentHealthChecking)}</p>
+      </Collapsible>
+    );
   }
 
   const { internalLinks, brokenExternalLinks, readability, freshnessWarning, minReadability = 0 } = contentHealth;

@@ -530,6 +530,7 @@
   "panel.contentHealth.readability.hint.word": "Replace multi-syllable words with simpler alternatives.",
   "panel.contentHealth.title": "Content Health",
   "panel.contentHealth.noIssues": "No content health issues found.",
+  "panel.contentHealth.checking": "Analyzing content health...",
   "panel.contentHealth.readability.label": "Readability",
   "panel.contentHealth.readability.level.veryEasy": "Very Easy",
   "panel.contentHealth.readability.level.easy": "Easy",
