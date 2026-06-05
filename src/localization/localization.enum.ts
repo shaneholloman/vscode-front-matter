@@ -2801,34 +2801,6 @@ export enum LocalizationKey {
    */
   listenersPanelDataListenerCopilotOptimizeReadabilityNoArticleContent = 'listeners.panel.dataListener.copilotOptimizeReadability.noArticleContent',
   /**
-   * You are helping me improve readability for this markdown article.
-   */
-  listenersPanelDataListenerCopilotOptimizeReadabilityPromptIntro = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.intro',
-  /**
-   * Optimize the article to reduce average words per sentence by splitting overly long sentences.
-   */
-  listenersPanelDataListenerCopilotOptimizeReadabilityPromptObjectiveSentence = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.objective.sentence',
-  /**
-   * Optimize the article to reduce average syllables per word by replacing complex words with simpler alternatives.
-   */
-  listenersPanelDataListenerCopilotOptimizeReadabilityPromptObjectiveWord = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.objective.word',
-  /**
-   * Preserve meaning, markdown structure, links, code blocks, and front matter unchanged.
-   */
-  listenersPanelDataListenerCopilotOptimizeReadabilityPromptPreserve = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.preserve',
-  /**
-   * Return revised markdown body suggestions and explain key edits.
-   */
-  listenersPanelDataListenerCopilotOptimizeReadabilityPromptReturn = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.return',
-  /**
-   * File: {0}
-   */
-  listenersPanelDataListenerCopilotOptimizeReadabilityPromptFile = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.file',
-  /**
-   * Content:
-   */
-  listenersPanelDataListenerCopilotOptimizeReadabilityPromptContent = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.content',
-  /**
    * No active editor
    */
   listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError = 'listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error',

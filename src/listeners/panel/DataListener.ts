@@ -173,23 +173,14 @@ export class DataListener extends BaseListener {
 
     const objective =
       type === 'sentence'
-        ? l10n.t(
-            LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptObjectiveSentence
-          )
-        : l10n.t(
-            LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptObjectiveWord
-          );
+        ? `Optimize the article to reduce average words per sentence by splitting overly long sentences.`
+        : `Optimize the article to reduce average syllables per word by replacing complex words with simpler alternatives.`;
 
     const prompt = [
-      l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptIntro),
+      `You are helping me improve readability for this article.`,
       objective,
-      l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptPreserve),
-      l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptReturn),
-      l10n.t(
-        LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptFile,
-        articlePath
-      ),
-      l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptContent)
+      `Preserve meaning, markdown structure, links, code blocks, and front matter unchanged.`,
+      `Return revised markdown body suggestions and explain key edits.`
     ].join('\n\n');
 
     try {
