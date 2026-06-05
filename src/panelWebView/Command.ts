@@ -10,5 +10,6 @@ export enum Command {
   sendMediaUrl = 'sendMediaUrl',
   updatePlaceholder = 'updatePlaceholder',
   dataFileEntries = 'dataFileEntries',
-  serverStarted = 'server-started'
+  serverStarted = 'server-started',
+  contentHealth = 'contentHealth'
 }

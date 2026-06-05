@@ -35,6 +35,9 @@ export default function useMessages() {
         setMetadata(message.payload);
         setLoading(false);
         break;
+      case Command.contentHealth:
+        setMetadata((prev: any) => prev ? { ...prev, contentHealth: message.payload } : prev);
+        break;
       case Command.settings:
         setSettings(message.payload);
         setLoading(false);

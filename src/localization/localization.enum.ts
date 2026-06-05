@@ -1701,6 +1701,106 @@ export enum LocalizationKey {
    */
   panelSlugActionTitle = 'panel.slugAction.title',
   /**
+   * Optimize average sentence length with Copilot
+   */
+  panelContentHealthReadabilityCopilotOptimizeSentence = 'panel.contentHealth.readability.copilot.optimizeSentence',
+  /**
+   * Optimize average word complexity with Copilot
+   */
+  panelContentHealthReadabilityCopilotOptimizeWord = 'panel.contentHealth.readability.copilot.optimizeWord',
+  /**
+   * Split long sentences to boost the score.
+   */
+  panelContentHealthReadabilityHintSentence = 'panel.contentHealth.readability.hint.sentence',
+  /**
+   * Replace multi-syllable words with simpler alternatives.
+   */
+  panelContentHealthReadabilityHintWord = 'panel.contentHealth.readability.hint.word',
+  /**
+   * Content Health
+   */
+  panelContentHealthTitle = 'panel.contentHealth.title',
+  /**
+   * No content health issues found.
+   */
+  panelContentHealthNoIssues = 'panel.contentHealth.noIssues',
+  /**
+   * Readability
+   */
+  panelContentHealthReadabilityLabel = 'panel.contentHealth.readability.label',
+  /**
+   * Very Easy
+   */
+  panelContentHealthReadabilityLevelVeryEasy = 'panel.contentHealth.readability.level.veryEasy',
+  /**
+   * Easy
+   */
+  panelContentHealthReadabilityLevelEasy = 'panel.contentHealth.readability.level.easy',
+  /**
+   * Standard
+   */
+  panelContentHealthReadabilityLevelStandard = 'panel.contentHealth.readability.level.standard',
+  /**
+   * Difficult
+   */
+  panelContentHealthReadabilityLevelDifficult = 'panel.contentHealth.readability.level.difficult',
+  /**
+   * Very Difficult
+   */
+  panelContentHealthReadabilityLevelVeryDifficult = 'panel.contentHealth.readability.level.veryDifficult',
+  /**
+   * (below threshold)
+   */
+  panelContentHealthReadabilityBelowThreshold = 'panel.contentHealth.readability.belowThreshold',
+  /**
+   * Avg sentence
+   */
+  panelContentHealthReadabilityAvgSentence = 'panel.contentHealth.readability.avgSentence',
+  /**
+   * Avg word
+   */
+  panelContentHealthReadabilityAvgWord = 'panel.contentHealth.readability.avgWord',
+  /**
+   * {0} words
+   */
+  panelContentHealthReadabilityWords = 'panel.contentHealth.readability.words',
+  /**
+   * {0} syllables
+   */
+  panelContentHealthReadabilitySyllables = 'panel.contentHealth.readability.syllables',
+  /**
+   * (target <= {0})
+   */
+  panelContentHealthReadabilityTarget = 'panel.contentHealth.readability.target',
+  /**
+   * Freshness
+   */
+  panelContentHealthFreshnessLabel = 'panel.contentHealth.freshness.label',
+  /**
+   * {0} days old - consider refreshing
+   */
+  panelContentHealthFreshnessDaysOld = 'panel.contentHealth.freshness.daysOld',
+  /**
+   * Broken external links
+   */
+  panelContentHealthBrokenExternalLinks = 'panel.contentHealth.brokenExternalLinks',
+  /**
+   * Link is valid
+   */
+  panelContentHealthLinkStatusValid = 'panel.contentHealth.link.status.valid',
+  /**
+   * Broken link
+   */
+  panelContentHealthLinkStatusBroken = 'panel.contentHealth.link.status.broken',
+  /**
+   * Select in document: {0}
+   */
+  panelContentHealthSelectInDocument = 'panel.contentHealth.selectInDocument',
+  /**
+   * (not found)
+   */
+  panelContentHealthLinkNotFound = 'panel.contentHealth.link.notFound',
+  /**
    * Smart rename
    */
   panelSmartRenameActionTitle = 'panel.smartRenameAction.title',
@@ -2692,6 +2792,42 @@ export enum LocalizationKey {
    * No filename provided.
    */
   listenersPanelDataListenerCreateDataFileNoFileName = 'listeners.panel.dataListener.createDataFile.noFileName',
+  /**
+   * No active article found.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityNoActiveArticle = 'listeners.panel.dataListener.copilotOptimizeReadability.noActiveArticle',
+  /**
+   * No article content found.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityNoArticleContent = 'listeners.panel.dataListener.copilotOptimizeReadability.noArticleContent',
+  /**
+   * You are helping me improve readability for this markdown article.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityPromptIntro = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.intro',
+  /**
+   * Optimize the article to reduce average words per sentence by splitting overly long sentences.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityPromptObjectiveSentence = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.objective.sentence',
+  /**
+   * Optimize the article to reduce average syllables per word by replacing complex words with simpler alternatives.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityPromptObjectiveWord = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.objective.word',
+  /**
+   * Preserve meaning, markdown structure, links, code blocks, and front matter unchanged.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityPromptPreserve = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.preserve',
+  /**
+   * Return revised markdown body suggestions and explain key edits.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityPromptReturn = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.return',
+  /**
+   * File: {0}
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityPromptFile = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.file',
+  /**
+   * Content:
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityPromptContent = 'listeners.panel.dataListener.copilotOptimizeReadability.prompt.content',
   /**
    * No active editor
    */

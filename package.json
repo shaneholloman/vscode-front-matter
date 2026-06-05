@@ -2138,6 +2138,30 @@
           "markdownDescription": "%setting.frontMatter.validation.enabled.markdownDescription%",
           "scope": "Validation"
         },
+        "frontMatter.contentHealth.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable the Content Health panel that shows readability scores, broken links, and freshness warnings.",
+          "scope": "ContentHealth"
+        },
+        "frontMatter.contentHealth.checkExternalLinks": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "When enabled, Front Matter will also perform HTTP HEAD requests to validate external links (may slow down the panel on articles with many external links).",
+          "scope": "ContentHealth"
+        },
+        "frontMatter.contentHealth.freshnessThreshold": {
+          "type": "number",
+          "default": 180,
+          "markdownDescription": "Number of days after which content is considered stale and a freshness warning is shown (0 disables the warning).",
+          "scope": "ContentHealth"
+        },
+        "frontMatter.contentHealth.minReadability": {
+          "type": "number",
+          "default": 0,
+          "markdownDescription": "Minimum Flesch Reading Ease score (0–100) before a readability warning is shown (0 disables the threshold).",
+          "scope": "ContentHealth"
+        },
         "frontMatter.website.host": {
           "type": "string",
           "markdownDescription": "%setting.frontMatter.website.host.markdownDescription%"

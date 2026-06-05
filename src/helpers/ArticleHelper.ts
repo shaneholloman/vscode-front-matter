@@ -946,17 +946,19 @@ export class ArticleHelper {
         .filter((node) => node.type === 'link')
         .map((node) => (node as Link).url);
 
-      const internalLinks = links.filter(
+      const internalLinkUrls = links.filter(
         (link) =>
           !link.startsWith('http') ||
           (baseUrl && link.toLowerCase().includes((baseUrl || '').toLowerCase()))
-      ).length;
-      let externalLinks = links.filter((link) => link.startsWith('http'));
+      );
+      const internalLinks = internalLinkUrls.length;
+      let externalLinksList = links.filter((link) => link.startsWith('http'));
       if (baseUrl) {
-        externalLinks = externalLinks.filter(
+        externalLinksList = externalLinksList.filter(
           (link) => !link.toLowerCase().includes(baseUrl.toLowerCase())
         );
       }
+      const externalLinkUrls = externalLinksList;
 
       const headers = [];
       for (const header of headings) {
@@ -992,7 +994,9 @@ export class ArticleHelper {
         paragraphs,
         images,
         internalLinks,
-        externalLinks: externalLinks.length,
+        internalLinkUrls,
+        externalLinks: externalLinkUrls.length,
+        externalLinkUrls,
         wordCount,
         content: article.content,
         firstParagraph

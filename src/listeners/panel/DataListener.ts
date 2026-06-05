@@ -23,11 +23,16 @@ import {
   DefaultFields,
   FEATURE_FLAG,
   SETTING_COMMA_SEPARATED_FIELDS,
+  SETTING_CONTENT_HEALTH_CHECK_EXTERNAL_LINKS,
+  SETTING_CONTENT_HEALTH_ENABLED,
+  SETTING_CONTENT_HEALTH_FRESHNESS_THRESHOLD,
+  SETTING_CONTENT_HEALTH_MIN_READABILITY,
   SETTING_DATE_FORMAT,
   SETTING_GLOBAL_ACTIVE_MODE,
   SETTING_GLOBAL_MODES,
   SETTING_TAXONOMY_CONTENT_TYPES,
-  SETTING_COPILOT_ENABLED
+  SETTING_COPILOT_ENABLED,
+  SETTING_EXPERIMENTAL
 } from '../../constants';
 import { Article, Preview } from '../../commands';
 import { FrontMatterParser, ParsedFrontMatter } from '../../parsers';
@@ -47,6 +52,10 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import { parse } from 'path';
 import { Copilot } from '../../services/Copilot';
+import { LinkValidator } from '../../helpers/LinkValidator';
+import { ReadabilityHelper } from '../../helpers/ReadabilityHelper';
+import { DateHelper } from '../../helpers/DateHelper';
+import { getRelPath } from '../../dashboardWebView/utils';
 
 const FILE_LIMIT = 10;
 
@@ -112,6 +121,100 @@ export class DataListener extends BaseListener {
       case CommandToCode.copilotSuggestTitle:
         this.copilotSuggestTitle(msg.command, msg.requestId, msg.payload);
         break;
+      case CommandToCode.copilotOptimizeAvgSentence:
+        this.copilotOptimizeReadability(msg.command, msg.requestId, 'sentence');
+        break;
+      case CommandToCode.copilotOptimizeAvgWord:
+        this.copilotOptimizeReadability(msg.command, msg.requestId, 'word');
+        break;
+    }
+  }
+
+  private static async copilotOptimizeReadability(
+    command: string,
+    requestId?: string,
+    type: 'sentence' | 'word' = 'sentence'
+  ) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const copilotEnabled = Settings.get<boolean>(SETTING_COPILOT_ENABLED) !== false;
+    const isCopilotInstalled = await Copilot.isInstalled();
+
+    if (!copilotEnabled || !isCopilotInstalled) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.servicesCopilotGetChatResponseError)
+      );
+      return;
+    }
+
+    const articlePath = ArticleHelper.getActiveFile();
+    if (!articlePath) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityNoActiveArticle)
+      );
+      return;
+    }
+
+    const article = await ArticleHelper.getFrontMatterByPath(articlePath);
+    if (!article || !article.content) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityNoArticleContent)
+      );
+      return;
+    }
+
+    const objective =
+      type === 'sentence'
+        ? l10n.t(
+            LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptObjectiveSentence
+          )
+        : l10n.t(
+            LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptObjectiveWord
+          );
+
+    const prompt = [
+      l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptIntro),
+      objective,
+      l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptPreserve),
+      l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptReturn),
+      l10n.t(
+        LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptFile,
+        articlePath
+      ),
+      l10n.t(LocalizationKey.listenersPanelDataListenerCopilotOptimizeReadabilityPromptContent)
+    ].join('\n\n');
+
+    try {
+      await commands.executeCommand('workbench.action.chat.open');
+      await commands.executeCommand('workbench.action.chat.newChat');
+
+      try {
+        await commands.executeCommand('workbench.action.chat.openagent', {
+          query: prompt,
+          attachFiles: [Uri.file(parseWinPath(articlePath))]
+        });
+      } catch {
+        await commands.executeCommand('workbench.action.chat.open', {
+          query: prompt,
+          attachFiles: [Uri.file(parseWinPath(articlePath))]
+        });
+      }
+
+      this.sendRequest(command, requestId, true);
+    } catch {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.servicesCopilotGetChatResponseError)
+      );
     }
   }
 
@@ -436,6 +539,81 @@ export class DataListener extends BaseListener {
     this.sendMsg(Command.metadata, updatedMetadata);
 
     DataListener.lastMetadataUpdate = updatedMetadata;
+
+    // Run content health checks in background — does not block the panel render
+    if (filePath && articleDetails && typeof articleDetails === 'object') {
+      void DataListener.runHealthChecks(
+        filePath,
+        articleDetails as {
+          internalLinkUrls: string[];
+          externalLinkUrls: string[];
+          content: string;
+        },
+        updatedMetadata
+      );
+    }
+  }
+
+  private static async runHealthChecks(
+    filePath: string,
+    articleDetails: { internalLinkUrls: string[]; externalLinkUrls: string[]; content: string },
+    metadata: Record<string, unknown>
+  ): Promise<void> {
+    const healthEnabled = Settings.get<boolean>(SETTING_CONTENT_HEALTH_ENABLED) !== false;
+    if (!healthEnabled) {
+      return;
+    }
+
+    try {
+      const folders = await Folders.getCachedOrFresh();
+
+      const experimental = Settings.get<boolean>(SETTING_EXPERIMENTAL) !== false;
+      const internalLinks = experimental
+        ? await LinkValidator.validateInternalLinks(
+            articleDetails.internalLinkUrls || [],
+            filePath,
+            folders
+          )
+        : [];
+
+      const checkExternal =
+        Settings.get<boolean>(SETTING_CONTENT_HEALTH_CHECK_EXTERNAL_LINKS) === true;
+      const externalResults = checkExternal
+        ? await LinkValidator.validateExternalLinks(articleDetails.externalLinkUrls || [])
+        : [];
+
+      const brokenExternalLinks = externalResults.filter((r) => !r.exists);
+
+      const readability = ReadabilityHelper.analyze(articleDetails.content || '');
+
+      const threshold = Settings.get<number>(SETTING_CONTENT_HEALTH_FRESHNESS_THRESHOLD) ?? 180;
+      let freshnessWarning: { daysSince: number; threshold: number } | null = null;
+      if (threshold > 0) {
+        const dateValue = (metadata?.date || metadata?.publishDate) as string | undefined;
+        if (dateValue) {
+          const dateFormat = Settings.get<string>(SETTING_DATE_FORMAT);
+          const parsed = DateHelper.tryParse(dateValue, dateFormat || undefined);
+          if (parsed && DateHelper.isValid(parsed)) {
+            const daysSince = Math.floor((Date.now() - parsed.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysSince > threshold) {
+              freshnessWarning = { daysSince, threshold };
+            }
+          }
+        }
+      }
+
+      const minReadability = Settings.get<number>(SETTING_CONTENT_HEALTH_MIN_READABILITY) ?? 0;
+
+      DataListener.sendMsg(Command.contentHealth, {
+        internalLinks,
+        brokenExternalLinks,
+        readability,
+        freshnessWarning,
+        minReadability
+      });
+    } catch (e) {
+      Logger.error(`DataListener::runHealthChecks: ${(e as Error).message}`);
+    }
   }
 
   /**

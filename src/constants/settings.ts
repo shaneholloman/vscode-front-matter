@@ -125,6 +125,11 @@ export const SETTING_LOGGING = 'logging';
 
 export const SETTING_VALIDATION_ENABLED = 'validation.enabled';
 
+export const SETTING_CONTENT_HEALTH_ENABLED = 'contentHealth.enabled';
+export const SETTING_CONTENT_HEALTH_CHECK_EXTERNAL_LINKS = 'contentHealth.checkExternalLinks';
+export const SETTING_CONTENT_HEALTH_FRESHNESS_THRESHOLD = 'contentHealth.freshnessThreshold';
+export const SETTING_CONTENT_HEALTH_MIN_READABILITY = 'contentHealth.minReadability';
+
 /**
  * Project override support
  */

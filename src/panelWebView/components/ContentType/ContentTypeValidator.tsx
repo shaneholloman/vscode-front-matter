@@ -15,7 +15,7 @@ export interface IContentTypeValidatorProps {
   metadata: IMetadata;
 }
 
-const fieldsToIgnore = [`filePath`, `articleDetails`, DefaultFields.Slug, DefaultFields.Keywords, DefaultFields.Type, DefaultFields.ContentType];
+const fieldsToIgnore = [`filePath`, `articleDetails`, DefaultFields.Slug, DefaultFields.Keywords, DefaultFields.Type, DefaultFields.ContentType, DefaultFields.ContentHealth];
 
 export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidatorProps> = ({
   fields,
