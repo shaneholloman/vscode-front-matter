@@ -25,6 +25,14 @@ interface Props {
 }
 
 const ContentHealth: React.FunctionComponent<Props> = ({ contentHealth }) => {
+  const hasSeenContentHealth = React.useRef(false);
+
+  React.useEffect(() => {
+    if (contentHealth !== undefined) {
+      hasSeenContentHealth.current = true;
+    }
+  }, [contentHealth]);
+
   const openContentHealthDocs = React.useCallback(() => {
     Messenger.send(GeneralCommands.toVSCode.runCommand, {
       command: COMMAND_NAME.docs,
@@ -40,11 +48,14 @@ const ContentHealth: React.FunctionComponent<Props> = ({ contentHealth }) => {
   ]), [openContentHealthDocs]);
 
   if (contentHealth === undefined) {
-    return (
-      <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)} actions={actions}>
-        <p className='opacity-60'>{localize(LocalizationKey.panelContentHealthChecking)}</p>
-      </Collapsible>
-    );
+    if (!hasSeenContentHealth.current) {
+      return (
+        <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)} actions={actions}>
+          <p className='opacity-60'>{localize(LocalizationKey.panelContentHealthChecking)}</p>
+        </Collapsible>
+      );
+    }
+    return null;
   }
 
   const { internalLinks, brokenExternalLinks, readability, freshnessWarning, minReadability = 0 } = contentHealth;
