@@ -25,11 +25,11 @@ interface Props {
 }
 
 const ContentHealth: React.FunctionComponent<Props> = ({ contentHealth }) => {
-  const hasSeenContentHealth = React.useRef(false);
+  const [lastKnownData, setLastKnownData] = React.useState<ContentHealthData | undefined>(undefined);
 
   React.useEffect(() => {
     if (contentHealth !== undefined) {
-      hasSeenContentHealth.current = true;
+      setLastKnownData(contentHealth);
     }
   }, [contentHealth]);
 
@@ -47,18 +47,18 @@ const ContentHealth: React.FunctionComponent<Props> = ({ contentHealth }) => {
     }
   ]), [openContentHealthDocs]);
 
-  if (contentHealth === undefined) {
-    if (!hasSeenContentHealth.current) {
-      return (
-        <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)} actions={actions}>
-          <p className='opacity-60'>{localize(LocalizationKey.panelContentHealthChecking)}</p>
-        </Collapsible>
-      );
-    }
-    return null;
+  // Use the last known data if current data is undefined (during analysis)
+  const displayData = contentHealth !== undefined ? contentHealth : lastKnownData;
+
+  if (displayData === undefined) {
+    return (
+      <Collapsible id='contentHealth' title={localize(LocalizationKey.panelContentHealthTitle)} actions={actions}>
+        <p className='opacity-60'>{localize(LocalizationKey.panelContentHealthChecking)}</p>
+      </Collapsible>
+    );
   }
 
-  const { internalLinks, brokenExternalLinks, readability, freshnessWarning, minReadability = 0 } = contentHealth;
+  const { internalLinks, brokenExternalLinks, readability, freshnessWarning, minReadability = 0 } = displayData;
 
   const hasBrokenInternalLinks = (internalLinks || []).some((l) => !l.exists);
   const hasBrokenExternal = (brokenExternalLinks || []).length > 0;
