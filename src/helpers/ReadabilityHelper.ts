@@ -15,11 +15,13 @@ export class ReadabilityHelper {
    */
   private static stripMarkdown(text: string): string {
     return text
+      .replace(/\{\{<[\s\S]*?>}}/g, '') // Hugo shortcodes (removes base64 blobs, captions, etc.)
+      .replace(/```[\s\S]*?```/g, '') // fenced code blocks (must run before inline code)
+      .replace(/`[^`\n]+`/g, '') // inline code
       .replace(/!\[.*?\]\(.*?\)/g, '') // images
       .replace(/\[([^\]]+)\]\(.*?\)/g, '$1') // links → text only
+      .replace(/^\|.*\|$/gm, '') // table rows
       .replace(/#{1,6}\s/g, '') // headings
-      .replace(/`{1,3}[^`]*`{1,3}/g, '') // inline + fenced code
-      .replace(/```[\s\S]*?```/g, '') // fenced blocks
       .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1') // bold/italic
       .replace(/>\s/g, '') // blockquotes
       .replace(/[-*+]\s/g, '') // list bullets

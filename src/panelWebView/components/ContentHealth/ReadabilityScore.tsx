@@ -17,7 +17,8 @@ interface Props {
   minScore: number;
 }
 
-const scoreColor = (score: number): string => {
+const scoreColor = (score: number, isLow: boolean): string => {
+  if (isLow) { return 'text-[var(--vscode-problemsWarningIcon-foreground)]'; }
   if (score >= 60) { return 'text-[var(--vscode-testing-iconPassed)]'; }
   if (score >= 30) { return 'text-[var(--vscode-problemsWarningIcon-foreground)]'; }
   return 'text-[var(--vscode-problemsErrorIcon-foreground)]';
@@ -63,7 +64,7 @@ const ReadabilityScore: React.FunctionComponent<Props> = ({ readability, minScor
       <VSCodeTableRow>
         <VSCodeTableCell>{localize(LocalizationKey.panelContentHealthReadabilityLabel)}</VSCodeTableCell>
         <VSCodeTableCell>
-          <span className={`font-semibold ${scoreColor(readability.score)}`}>
+          <span className={`font-semibold ${scoreColor(readability.score, isLow)}`}>
             {readability.score}
           </span>
           <span className='text-[var(--vscode-descriptionForeground)] ml-1'>
