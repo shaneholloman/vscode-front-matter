@@ -13,6 +13,7 @@
 ### 🐞 Fixes
 
 - Fix number fields not being saved to front matter when used inside block field groups
+- [#1041](https://github.com/estruyf/vscode-front-matter/issues/1041): Fix in image page when using page bundles
 
 ## [10.10.1] - 2026-04-23
 
