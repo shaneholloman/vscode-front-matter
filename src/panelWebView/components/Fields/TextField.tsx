@@ -167,8 +167,9 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   useEffect(() => {
     if (debouncedText !== undefined && value !== debouncedText && lastUpdated !== null) {
       onChange(debouncedText || '');
+      setLastUpdated(null);
     }
-  }, [debouncedText, value, lastUpdated]);
+  }, [debouncedText, value, lastUpdated, onChange]);
 
   return (
     <div className={`metadata_field`}>
