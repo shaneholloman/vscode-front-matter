@@ -128,7 +128,12 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       }).then((data) => {
         if (data.field === field.name) {
           setFieldValue(data.value);
-          onSendUpdate(field.name, data.value, parentFields);
+          // Only write back if the placeholder was actually resolved to something different,
+          // otherwise values like Hugo shortcodes ({{%...%}}) that contain {{ }} but are
+          // not FM placeholders would cause an infinite update loop.
+          if (data.value !== value) {
+            onSendUpdate(field.name, data.value, parentFields);
+          }
         }
       }).catch((err) => {
         console.error(err);
