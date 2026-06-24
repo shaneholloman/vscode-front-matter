@@ -13,6 +13,7 @@
 
 ### 🐞 Fixes
 
+- [#905](https://github.com/estruyf/vscode-front-matter/issues/905): Fix Hugo framework detection for sites using `hugo.toml`, `hugo.yaml`, `hugo.yml`, or `hugo.json` (the default config filename since Hugo v0.110)
 - Fix number fields not being saved to front matter when used inside block field groups
 - [#920](https://github.com/estruyf/vscode-front-matter/issues/920): Fix `metadata.fmRelFilePath` returning an absolute path on Windows by normalizing the workspace folder path before stripping it
 - [#963](https://github.com/estruyf/vscode-front-matter/issues/963): Prevent infinite update loops for fields when using Hugo partials as values in the front matter
