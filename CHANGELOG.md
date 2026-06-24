@@ -14,6 +14,7 @@
 ### 🐞 Fixes
 
 - Fix number fields not being saved to front matter when used inside block field groups
+- [#920](https://github.com/estruyf/vscode-front-matter/issues/920): Fix `metadata.fmRelFilePath` returning an absolute path on Windows by normalizing the workspace folder path before stripping it
 - [#963](https://github.com/estruyf/vscode-front-matter/issues/963): Prevent infinite update loops for fields when using Hugo partials as values in the front matter
 - [#1041](https://github.com/estruyf/vscode-front-matter/issues/1041): Fix in image page when using page bundles
 
