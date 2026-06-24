@@ -511,6 +511,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           dataFileId={field.dataFileId}
           dataFileKey={field.dataFileKey}
           dataFileValue={field.dataFileValue}
+          dataFileAdditionalFields={field.dataFileAdditionalFields}
           selected={fieldValue as string}
           required={!!field.required}
           multiSelect={field.multiple}

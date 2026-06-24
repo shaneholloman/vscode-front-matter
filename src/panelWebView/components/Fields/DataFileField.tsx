@@ -17,10 +17,11 @@ export interface IDataFileFieldProps {
   dataFileId?: string;
   dataFileKey?: string;
   dataFileValue?: string;
-  selected: string | string[];
+  dataFileAdditionalFields?: string[];
+  selected: string | string[] | Record<string, unknown> | Record<string, unknown>[];
   multiSelect?: boolean;
   required?: boolean;
-  onChange: (value: string | string[]) => void;
+  onChange: (value: string | string[] | Record<string, unknown> | Record<string, unknown>[]) => void;
 }
 
 export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
@@ -29,6 +30,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
   dataFileId,
   dataFileKey,
   dataFileValue,
+  dataFileAdditionalFields,
   selected,
   multiSelect,
   onChange,
@@ -40,37 +42,83 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const { getDropdownStyle } = useDropdownStyle(inputRef as any);
 
+  const hasAdditionalFields = useMemo(
+    () => !!dataFileAdditionalFields && dataFileAdditionalFields.length > 0,
+    [dataFileAdditionalFields]
+  );
+
+  // Extract the key string from a selected value (which may be a plain object when additionalFields is configured)
+  const extractKey = useCallback(
+    (value: unknown): string => {
+      if (value && typeof value === 'object' && !Array.isArray(value) && dataFileKey) {
+        return ((value as Record<string, unknown>)[dataFileKey] as string) || '';
+      }
+      return (value as string) || '';
+    },
+    [dataFileKey]
+  );
+
+  // Build the value to emit: an object when additionalFields is configured, otherwise just the key string
+  const buildEmitValue = useCallback(
+    (keyValue: string): string | Record<string, unknown> => {
+      if (hasAdditionalFields && dataEntries && dataFileKey && dataFileAdditionalFields) {
+        const entry = (dataEntries as any[]).find((r: any) => r[dataFileKey] === keyValue);
+        if (entry) {
+          const obj: Record<string, unknown> = { [dataFileKey]: entry[dataFileKey] };
+          for (const field of dataFileAdditionalFields) {
+            obj[field] = entry[field];
+          }
+          return obj;
+        }
+      }
+      return keyValue;
+    },
+    [hasAdditionalFields, dataEntries, dataFileKey, dataFileAdditionalFields]
+  );
+
   const onValueChange = useCallback(
     (txtValue: string) => {
       if (multiSelect) {
-        const newValue = [...((crntSelected || []) as string[]), txtValue];
-        setCrntSelected(newValue);
-        onChange(newValue);
+        const newKeys = [...((crntSelected || []) as string[]), txtValue];
+        setCrntSelected(newKeys);
+        if (hasAdditionalFields) {
+          onChange(newKeys.map(buildEmitValue) as Record<string, unknown>[]);
+        } else {
+          onChange(newKeys);
+        }
       } else {
         setCrntSelected(txtValue);
-        onChange(txtValue);
+        if (hasAdditionalFields) {
+          onChange(buildEmitValue(txtValue) as Record<string, unknown>);
+        } else {
+          onChange(txtValue);
+        }
       }
     },
-    [crntSelected, multiSelect, onChange]
+    [crntSelected, multiSelect, onChange, hasAdditionalFields, buildEmitValue]
   );
 
   const removeSelected = useCallback(
     (txtValue: string) => {
       if (multiSelect) {
-        const newValue = [...(crntSelected || [])].filter((v) => v !== txtValue);
-        setCrntSelected(newValue);
-        onChange(newValue);
+        const newKeys = [...(crntSelected || [])].filter((v) => v !== txtValue) as string[];
+        setCrntSelected(newKeys);
+        if (hasAdditionalFields) {
+          onChange(newKeys.map(buildEmitValue) as Record<string, unknown>[]);
+        } else {
+          onChange(newKeys);
+        }
       } else {
         setCrntSelected('');
         onChange('');
       }
     },
-    [crntSelected, multiSelect, onChange]
+    [crntSelected, multiSelect, onChange, hasAdditionalFields, buildEmitValue]
   );
 
   const allChoices = useMemo(() => {
     if (dataEntries && dataFileKey) {
-      return dataEntries
+      return (dataEntries as any[])
         .map((r: any) => ({
           id: r[dataFileKey],
           title: r[dataFileValue || dataFileKey] || r[dataFileKey]
@@ -117,12 +165,14 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
   }, [required, crntSelected]);
 
   useEffect(() => {
-    if (selected) {
+    if (selected !== undefined && selected !== null && selected !== '') {
       if (multiSelect) {
-        setCrntSelected(typeof selected === 'string' ? [selected] : selected);
+        const keys = (Array.isArray(selected) ? selected : [selected]).map(extractKey);
+        setCrntSelected(keys);
         return;
       } else {
-        setCrntSelected(selected instanceof Array ? selected[0] : selected);
+        const key = extractKey(Array.isArray(selected) ? selected[0] : selected);
+        setCrntSelected(key);
         return;
       }
     }

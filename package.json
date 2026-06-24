@@ -1582,6 +1582,14 @@
                       "default": "",
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.dataFileValue.description%"
                     },
+                    "dataFileAdditionalFields": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "default": [],
+                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.dataFileAdditionalFields.description%"
+                    },
                     "editable": {
                       "type": "boolean",
                       "default": true,
