@@ -2186,7 +2186,7 @@
         },
         "frontMatter.copilot.family": {
           "type": "string",
-          "default": "gpt-4o-mini",
+          "default": "gpt-5-mini",
           "markdownDescription": "%setting.frontMatter.copilot.family.markdownDescription%"
         },
         "frontMatter.copilot.enabled": {
