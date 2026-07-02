@@ -12,6 +12,7 @@ export interface ICustomActionsProps {
   contentType: string;
   scripts: CustomScript[] | undefined;
   showTrigger?: boolean;
+  onMenuOpenChange?: (open: boolean) => void;
 }
 
 export const CustomActions: React.FunctionComponent<ICustomActionsProps> = ({
@@ -19,6 +20,7 @@ export const CustomActions: React.FunctionComponent<ICustomActionsProps> = ({
   contentType,
   scripts,
   showTrigger = false,
+  onMenuOpenChange,
 }: React.PropsWithChildren<ICustomActionsProps>) => {
 
   const onRunCustomScript = React.useCallback(
@@ -57,7 +59,7 @@ export const CustomActions: React.FunctionComponent<ICustomActionsProps> = ({
             key={script.id || script.title}
             title={script.title}
             onClick={(e) => onRunCustomScript(e, script)}>
-            <CommandLineIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+            <CommandLineIcon className={`h-4 w-4`} aria-hidden={true} />
             <span>{script.title}</span>
           </DropdownMenuItem>
         ))
@@ -70,10 +72,10 @@ export const CustomActions: React.FunctionComponent<ICustomActionsProps> = ({
 
   if (showTrigger) {
     return (
-      <DropdownMenu>
+      <DropdownMenu onOpenChange={onMenuOpenChange}>
         <DropdownMenuTrigger
           title={l10n.t(LocalizationKey.commonOpenCustomActions)}
-          className='px-2 text-[var(--frontmatter-secondary-text)] hover:text-[var(--frontmatter-button-hoverBackground)] focus-visible:outline-none'>
+          className='px-2 text-[var(--fm-text-lo)]  hover:text-[var(--fm-text-mid)] focus-visible:outline-none'>
           <span className="sr-only">{l10n.t(LocalizationKey.commonOpenCustomActions)}</span>
           <CommandLineIconSolid className="w-4 h-4" aria-hidden="true" />
         </DropdownMenuTrigger>

@@ -696,6 +696,10 @@ export enum LocalizationKey {
    */
   dashboardHeaderSortingLabel = 'dashboard.header.sorting.label',
   /**
+   * Default
+   */
+  dashboardHeaderSortingDefault = 'dashboard.header.sorting.default',
+  /**
    * Open on startup?
    */
   dashboardHeaderStartupLabel = 'dashboard.header.startup.label',
@@ -1697,6 +1701,110 @@ export enum LocalizationKey {
    */
   panelSlugActionTitle = 'panel.slugAction.title',
   /**
+   * Optimize average sentence length with Copilot
+   */
+  panelContentHealthReadabilityCopilotOptimizeSentence = 'panel.contentHealth.readability.copilot.optimizeSentence',
+  /**
+   * Optimize average word complexity with Copilot
+   */
+  panelContentHealthReadabilityCopilotOptimizeWord = 'panel.contentHealth.readability.copilot.optimizeWord',
+  /**
+   * Split long sentences to boost the score.
+   */
+  panelContentHealthReadabilityHintSentence = 'panel.contentHealth.readability.hint.sentence',
+  /**
+   * Replace multi-syllable words with simpler alternatives.
+   */
+  panelContentHealthReadabilityHintWord = 'panel.contentHealth.readability.hint.word',
+  /**
+   * Content Health
+   */
+  panelContentHealthTitle = 'panel.contentHealth.title',
+  /**
+   * No content health issues found.
+   */
+  panelContentHealthNoIssues = 'panel.contentHealth.noIssues',
+  /**
+   * Analyzing content health...
+   */
+  panelContentHealthChecking = 'panel.contentHealth.checking',
+  /**
+   * Readability
+   */
+  panelContentHealthReadabilityLabel = 'panel.contentHealth.readability.label',
+  /**
+   * Very Easy
+   */
+  panelContentHealthReadabilityLevelVeryEasy = 'panel.contentHealth.readability.level.veryEasy',
+  /**
+   * Easy
+   */
+  panelContentHealthReadabilityLevelEasy = 'panel.contentHealth.readability.level.easy',
+  /**
+   * Standard
+   */
+  panelContentHealthReadabilityLevelStandard = 'panel.contentHealth.readability.level.standard',
+  /**
+   * Difficult
+   */
+  panelContentHealthReadabilityLevelDifficult = 'panel.contentHealth.readability.level.difficult',
+  /**
+   * Very Difficult
+   */
+  panelContentHealthReadabilityLevelVeryDifficult = 'panel.contentHealth.readability.level.veryDifficult',
+  /**
+   * (below threshold - {0})
+   */
+  panelContentHealthReadabilityBelowThreshold = 'panel.contentHealth.readability.belowThreshold',
+  /**
+   * Avg sentence
+   */
+  panelContentHealthReadabilityAvgSentence = 'panel.contentHealth.readability.avgSentence',
+  /**
+   * Avg word
+   */
+  panelContentHealthReadabilityAvgWord = 'panel.contentHealth.readability.avgWord',
+  /**
+   * {0} words
+   */
+  panelContentHealthReadabilityWords = 'panel.contentHealth.readability.words',
+  /**
+   * {0} syllables
+   */
+  panelContentHealthReadabilitySyllables = 'panel.contentHealth.readability.syllables',
+  /**
+   * (target <= {0})
+   */
+  panelContentHealthReadabilityTarget = 'panel.contentHealth.readability.target',
+  /**
+   * Freshness
+   */
+  panelContentHealthFreshnessLabel = 'panel.contentHealth.freshness.label',
+  /**
+   * {0} days old - consider refreshing
+   */
+  panelContentHealthFreshnessDaysOld = 'panel.contentHealth.freshness.daysOld',
+  /**
+   * Broken external links
+   */
+  panelContentHealthBrokenExternalLinks = 'panel.contentHealth.brokenExternalLinks',
+  /**
+   * Link is valid
+   */
+  panelContentHealthLinkStatusValid = 'panel.contentHealth.link.status.valid',
+  /**
+   * Broken link
+   */
+  panelContentHealthLinkStatusBroken = 'panel.contentHealth.link.status.broken',
+  /**
+   * Select in document: {0}
+   */
+  panelContentHealthSelectInDocument = 'panel.contentHealth.selectInDocument',
+  /**
+   * (not found)
+   */
+  panelContentHealthLinkNotFound = 'panel.contentHealth.link.notFound',
+  /**
    * Smart rename
    */
   panelSmartRenameActionTitle = 'panel.smartRenameAction.title',
@@ -2688,6 +2796,14 @@ export enum LocalizationKey {
    * No filename provided.
    */
   listenersPanelDataListenerCreateDataFileNoFileName = 'listeners.panel.dataListener.createDataFile.noFileName',
+  /**
+   * No active article found.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityNoActiveArticle = 'listeners.panel.dataListener.copilotOptimizeReadability.noActiveArticle',
+  /**
+   * No article content found.
+   */
+  listenersPanelDataListenerCopilotOptimizeReadabilityNoArticleContent = 'listeners.panel.dataListener.copilotOptimizeReadability.noArticleContent',
   /**
    * No active editor
    */

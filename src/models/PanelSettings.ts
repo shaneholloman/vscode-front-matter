@@ -129,6 +129,7 @@ export interface Field {
   dataFileId?: string;
   dataFileKey?: string;
   dataFileValue?: string;
+  dataFileAdditionalFields?: string[];
 
   // Number field options
   numberOptions?: NumberOptions;

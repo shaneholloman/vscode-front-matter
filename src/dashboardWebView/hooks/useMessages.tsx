@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { DashboardCommand } from '../DashboardCommand';
 import { DashboardMessage } from '../DashboardMessage';
@@ -9,7 +9,12 @@ import {
   SettingsAtom,
   ViewDataAtom,
   SearchReadyAtom,
-  ModeAtom
+  ModeAtom,
+  GroupingAtom,
+  FolderAtom,
+  FiltersAtom,
+  TagAtom,
+  CategoryAtom
 } from '../state';
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
@@ -17,6 +22,7 @@ import { NavigationType } from '../models';
 import { GeneralCommands } from '../../constants';
 import { useNavigate } from 'react-router-dom';
 import { routePaths } from '..';
+import { GroupOption } from '../constants/GroupOption';
 
 export default function useMessages() {
   const navigate = useNavigate();
@@ -27,6 +33,12 @@ export default function useMessages() {
   const [, setMode] = useRecoilState(ModeAtom);
   const [, setView] = useRecoilState(DashboardViewAtom);
   const [, setSearchReady] = useRecoilState(SearchReadyAtom);
+  const [, setGrouping] = useRecoilState(GroupingAtom);
+  const [, setFolder] = useRecoilState(FolderAtom);
+  const [, setFilters] = useRecoilState(FiltersAtom);
+  const [, setTag] = useRecoilState(TagAtom);
+  const [, setCategory] = useRecoilState(CategoryAtom);
+  const defaultsApplied = useRef(false);
 
   const messageListener = (event: MessageEvent<EventData<any>>) => {
     const message = event.data;
@@ -61,6 +73,35 @@ export default function useMessages() {
         break;
       case DashboardCommand.settings:
         setSettings(message.payload);
+        if (!defaultsApplied.current) {
+          defaultsApplied.current = true;
+          const defaults = message.payload?.dashboardState?.contents?.defaults;
+          if (defaults) {
+            if (defaults.grouping) {
+              const GROUPING_MAP: { [key: string]: GroupOption } = {
+                Year: GroupOption.Year,
+                Draft: GroupOption.Draft,
+                None: GroupOption.none
+              };
+              setGrouping(GROUPING_MAP[defaults.grouping] ?? (defaults.grouping as any));
+            }
+            if (defaults.filters) {
+              const { contentFolders, tags, categories, ...customFilters } = defaults.filters;
+              if (contentFolders) {
+                setFolder(contentFolders);
+              }
+              if (tags) {
+                setTag(tags);
+              }
+              if (categories) {
+                setCategory(categories);
+              }
+              if (Object.keys(customFilters).length > 0) {
+                setFilters(customFilters);
+              }
+            }
+          }
+        }
         break;
       case DashboardCommand.pages:
         setPages(message.payload);

@@ -36,7 +36,10 @@ export const DateField: React.FunctionComponent<IDateFieldProps> = ({
   }
 
   return (
-    <span className={`date__field ${className || ''} text-xs text-[var(--frontmatter-secondary-text)]`}>
+    <span
+      className={`date__field ${className || ''} text-xs`}
+      style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}
+    >
       {dateValue}
     </span>
   );

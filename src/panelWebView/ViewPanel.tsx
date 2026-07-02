@@ -3,6 +3,7 @@ import { Actions } from './components/Actions';
 import { GlobalSettings } from './components/GlobalSettings';
 import { OtherActions } from './components/OtherActions';
 import { SeoStatus } from './components/SeoStatus';
+import { ContentHealth } from './components/ContentHealth/ContentHealth';
 import { Spinner } from './components/Spinner';
 import { FolderAndFiles } from './components/FolderAndFiles';
 import { Metadata } from './components/Metadata';
@@ -31,7 +32,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
     folderAndFiles,
     focusElm,
     unsetFocus,
-    mode
+    mode,
+    contentHealth
   } = useMessages();
   const prevMediaSelection = usePrevious(mediaSelecting);
   const [scrollY, setScrollY] = useState(0);
@@ -127,6 +129,14 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
         <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.globalSettings}>
           <GlobalSettings settings={settings} isBase={!metadata} />
         </FeatureFlag>
+
+        {
+          !loading && metadata && (
+            <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.contentHealth}>
+              <ContentHealth contentHealth={contentHealth} />
+            </FeatureFlag>
+          )
+        }
 
         {
           !loading && metadata && (

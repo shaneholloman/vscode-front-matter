@@ -270,7 +270,7 @@ Example: SEO, website optimization, digital marketing.`
     // console.log(models);
     const [model] = await lm.selectChatModels({
       vendor: 'copilot',
-      family: Settings.get<string>(SETTING_COPILOT_FAMILY) || 'gpt-4.1'
+      family: Settings.get<string>(SETTING_COPILOT_FAMILY) || 'gpt-5-mini'
     });
 
     if ((!model || !model.sendRequest) && retry <= 5) {

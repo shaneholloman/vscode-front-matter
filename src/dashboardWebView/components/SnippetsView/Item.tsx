@@ -18,6 +18,7 @@ import SnippetForm, { SnippetFormHandle } from './SnippetForm';
 import { LocalizationKey } from '../../../localization';
 import { FooterActions } from './FooterActions';
 import { ItemMenu } from './ItemMenu';
+import { cn } from '../../../utils/cn';
 import { SlideOver } from '../Modals/SlideOver';
 import { DEFAULT_DASHBOARD_FEATURE_FLAGS } from '../../../constants/DefaultFeatureFlags';
 
@@ -36,6 +37,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const [showInsertDialog, setShowInsertDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
   const [snippetTitle, setSnippetTitle] = useState<string>('');
   const [snippetDescription, setSnippetDescription] = useState<string>('');
@@ -152,10 +154,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className={`group flex flex-col relative overflow-hidden shadow-md hover:shadow-xl dark:shadow-none border space-y-2 rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] border-[var(--frontmatter-border)]`}>
-        <div className='p-4 grow space-y-2'>
+      <li className={cn("group relative flex flex-col w-full text-left rounded-[9px] overflow-hidden border border-[var(--fm-border)] bg-[var(--fm-surface-2)] shadow-[0_1px_2px_rgba(0,0,0,.3)] hover:border-[var(--fm-border-hi)] hover:shadow-[0_8px_24px_rgba(0,0,0,.35)] transform-gpu hover:-translate-y-0.5 transition duration-150 ease-out", menuOpen && "border-[var(--fm-border-hi)] shadow-[0_8px_24px_rgba(0,0,0,.35)] -translate-y-0.5")}>
+        <div className="relative flex-1 px-3 pt-3 pb-2 min-h-0 space-y-2 overflow-hidden">
           <h2
-            className="font-bold flex items-center"
+            className="text-[15px] font-semibold leading-snug text-[var(--fm-text-hi)] flex items-center"
             title={snippet.isMediaSnippet ? 'Media snippet' : 'Content snippet'}
           >
             <CodeBracketIcon className="w-5 h-5 mr-2" aria-hidden={true} />
@@ -170,7 +172,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               <ItemMenu
                 insertEnabled={!!(insertToContent && !snippet.isMediaSnippet)}
                 sourcePath={snippet.sourcePath}
-                onInsert={() => setShowInsertDialog(true)} />
+                onInsert={() => setShowInsertDialog(true)}
+                onMenuOpenChange={setMenuOpen} />
             }
           >
             <ItemMenu
@@ -178,16 +181,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               sourcePath={snippet.sourcePath}
               onEdit={onOpenEdit}
               onInsert={() => setShowInsertDialog(true)}
-              onDelete={() => setShowAlert(true)} />
+              onDelete={() => setShowAlert(true)}
+              onMenuOpenChange={setMenuOpen} />
           </FeatureFlag>
 
-          <div className='inline-block mr-1 mt-1 text-xs text-[var(--vscode-button-secondaryForeground)] bg-[var(--vscode-button-secondaryBackground)] border border-[var(--frontmatter-border)] rounded px-1 py-0.5'>
+          <div className="inline-flex mr-1 mt-1 text-[0.65rem] text-[var(--fm-text-lo)] bg-[var(--fm-surface-3)] border border-[var(--fm-border)] rounded-[6px] px-1.5 py-0.5">
             {
               snippet.isMediaSnippet ? l10n.t(LocalizationKey.dashboardSnippetsViewItemTypeMedia) : l10n.t(LocalizationKey.dashboardSnippetsViewItemTypeContent)
             }
           </div>
 
-          <p className={`text-xs text-[var(--frontmatter-text)]`}>{snippet.description}</p>
+          <p className="text-xs text-[var(--fm-text-mid)]">{snippet.description}</p>
         </div>
 
         <FeatureFlag

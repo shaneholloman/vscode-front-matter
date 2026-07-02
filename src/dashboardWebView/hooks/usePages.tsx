@@ -17,6 +17,7 @@ import {
   TabSelector,
   TagSelector
 } from '../state';
+import { LastSyncAtom } from '../state';
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
@@ -26,10 +27,13 @@ import { ExtensionState, GeneralCommands } from '../../constants';
 import { SortingOption } from '../models';
 import { I18nConfig } from '../../models';
 import { usePrevious } from '../../panelWebView/hooks/usePrevious';
+import { getSortingOptions, resolveSortingOption } from '../utils';
+import { NavigationType } from '../models/NavigationType';
 
 export default function usePages(pages: Page[]) {
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
   const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
+  const [, setLastSync] = useRecoilState(LastSyncAtom);
   const [sorting, setSorting] = useRecoilState(SortingAtom);
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
   const [locales, setLocales] = useRecoilState(LocalesAtom);
@@ -226,6 +230,7 @@ export default function usePages(pages: Page[]) {
 
       // Set the pages
       setPageItems(crntPages);
+      setLastSync(Date.now());
     },
     [tab, tabInfo, settings, filters, locales, tabPrevious]
   );
@@ -263,6 +268,19 @@ export default function usePages(pages: Page[]) {
           setSorting(value);
           return;
         } else {
+          const fallbackSorting = resolveSortingOption({
+            currentSorting: null,
+            persistedSorting: value || null,
+            settings: settings || null,
+            view: NavigationType.Contents,
+            allOptions: getSortingOptions(NavigationType.Contents, settings?.customSorting)
+          });
+
+          if (fallbackSorting) {
+            setSorting(fallbackSorting);
+            return;
+          }
+
           startPageProcessing();
         }
       });

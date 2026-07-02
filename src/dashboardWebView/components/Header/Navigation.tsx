@@ -5,39 +5,60 @@ import { SettingsAtom, TabAtom, TabInfoAtom } from '../../state';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
-export interface INavigationProps {
-  totalPages: number;
-}
-
 export interface INavigationItemProps {
   tabId: string;
   isCrntTab: boolean;
+  count?: number;
   onClick: () => void;
 }
 
 const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
   tabId,
   isCrntTab,
+  count,
   onClick,
   children
 }: React.PropsWithChildren<INavigationItemProps>) => {
-
   return (
     <button
-      className={`${isCrntTab
-        ?
-        `border-[var(--vscode-textLink-foreground)] text-[var(--vscode-textLink-foreground)]` :
-        `border-transparent text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-textLink-activeForeground)] hover:border-[var(--vscode-textLink-activeForeground)]`
-        } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-sm font-medium whitespace-nowrap transition-colors duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1`}
+      style={{
+        backgroundColor: isCrntTab ? 'var(--fm-surface-4)' : 'transparent',
+        color: isCrntTab ? 'var(--fm-text-hi)' : 'var(--fm-text-lo)',
+        outlineColor: isCrntTab ? 'var(--fm-accent)' : undefined
+      }}
+      onMouseEnter={(e) => {
+        if (!isCrntTab) {
+          (e.currentTarget as HTMLButtonElement).style.color = 'var(--fm-text-mid)';
+          (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--fm-surface-3)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isCrntTab) {
+          (e.currentTarget as HTMLButtonElement).style.color = 'var(--fm-text-lo)';
+          (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+        }
+      }}
       aria-current={isCrntTab ? 'page' : undefined}
       onClick={onClick}
     >
       {children}
+      {count !== undefined && count > 0 && (
+        <span
+          className={`text-[0.65rem] font-medium px-1.5 py-0.5 rounded-full leading-none`}
+          style={{
+            backgroundColor: isCrntTab ? 'var(--fm-accent)' : 'var(--fm-surface-3)',
+            color: isCrntTab ? 'var(--fm-accent-ink)' : 'var(--fm-text-xlo)'
+          }}
+        >
+          {count}
+        </span>
+      )}
     </button>
-  )
+  );
 };
 
-export const Navigation: React.FunctionComponent<INavigationProps> = () => {
+export const Navigation: React.FunctionComponent = () => {
   const [crntTab, setCrntTab] = useRecoilState(TabAtom);
   const tabInfo = useRecoilValue(TabInfoAtom);
   const settings = useRecoilValue(SettingsAtom);
@@ -61,16 +82,17 @@ export const Navigation: React.FunctionComponent<INavigationProps> = () => {
   }, [settings?.draftField?.type, tabInfo]);
 
   return (
-    <nav className="flex-1 -mb-px flex space-x-2 xl:space-x-4" aria-label="Tabs">
+    <nav className="flex items-center gap-1 flex-1" aria-label="Tabs">
       {settings?.draftField?.type === 'boolean' ? (
         tabs.map((tab) => (
           <NavigationItem
             tabId={tab.id}
             isCrntTab={tab.id === crntTab}
+            count={tabInfo?.[tab.id]}
             key={tab.name}
-            onClick={() => setCrntTab(tab.id)}>
+            onClick={() => setCrntTab(tab.id)}
+          >
             {tab.name}
-            {tabInfo && tabInfo[tab.id] ? ` (${tabInfo[tab.id]})` : ''}
           </NavigationItem>
         ))
       ) : (
@@ -78,9 +100,10 @@ export const Navigation: React.FunctionComponent<INavigationProps> = () => {
           <NavigationItem
             tabId={tabs[0].id}
             isCrntTab={tabs[0].id === crntTab}
-            onClick={() => setCrntTab(tabs[0].id)}>
+            count={tabInfo?.[tabs[0].id]}
+            onClick={() => setCrntTab(tabs[0].id)}
+          >
             {tabs[0].name}
-            {tabInfo && tabInfo[tabs[0].id] ? ` (${tabInfo[tabs[0].id]})` : ''}
           </NavigationItem>
 
           {settings?.draftField?.choices?.map((value, idx) => (
@@ -88,9 +111,10 @@ export const Navigation: React.FunctionComponent<INavigationProps> = () => {
               key={`${value}-${idx}`}
               tabId={value}
               isCrntTab={value === crntTab}
-              onClick={() => setCrntTab(value)}>
+              count={tabInfo?.[value]}
+              onClick={() => setCrntTab(value)}
+            >
               {value}
-              {tabInfo && tabInfo[value] ? ` (${tabInfo[value]})` : ''}
             </NavigationItem>
           ))}
         </>

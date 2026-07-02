@@ -31,13 +31,13 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   }
 
   return (
-    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)] z-50`}>
+    <div className="w-full flex items-center justify-end gap-0.5 px-2 py-2 border-t border-[var(--fm-border)] z-50">
       {insertEnabled && (
         <QuickAction
           title={l10n.t(LocalizationKey.commonInsertSnippet)}
-          className={`text-[var(--frontmatter-secondary-text)]`}
+          className={`text-[var(--fm-text-lo)] hover:text-[var(--fm-text-mid)]`}
           onClick={onInsert}>
-          <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
+          <PlusIcon className={`w-3.5 h-3.5`} aria-hidden="true" />
           <span className='sr-only'>{l10n.t(LocalizationKey.commonInsertSnippet)}</span>
         </QuickAction>
       )}
@@ -49,9 +49,9 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
               onEdit && (
                 <QuickAction
                   title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionEditSnippet)}
-                  className={`text-[var(--frontmatter-secondary-text)]`}
+                  className={`text-[var(--fm-text-lo)] hover:text-[var(--fm-text-mid)]`}
                   onClick={onEdit}>
-                  <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
+                  <PencilIcon className={`w-3.5 h-3.5`} aria-hidden="true" />
                   <span className='sr-only'>{l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionEditSnippet)}</span>
                 </QuickAction>
               )
@@ -61,9 +61,9 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
               onDelete && (
                 <QuickAction
                   title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionDeleteSnippet)}
-                  className={`text-[var(--frontmatter-secondary-text)] hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
+                  className={`text-[var(--fm-text-lo)] hover:text-[var(--fm-status-danger)]`}
                   onClick={onDelete}>
-                  <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
+                  <TrashIcon className={`w-3.5 h-3.5`} aria-hidden="true" />
                   <span className='sr-only'>{l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionDeleteSnippet)}</span>
                 </QuickAction>
               )
@@ -72,9 +72,9 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
         ) : (
           <QuickAction
             title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionViewSnippet)}
-            className={`text-[var(--frontmatter-secondary-text)]`}
+            className={`text-[var(--fm-text-lo)] hover:text-[var(--fm-text-mid)]`}
             onClick={showFile}>
-            <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
+            <EyeIcon className={`w-3.5 h-3.5`} aria-hidden="true" />
             <span className='sr-only'>{l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionViewSnippet)}</span>
           </QuickAction>
         )

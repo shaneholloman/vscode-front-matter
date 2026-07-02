@@ -4,7 +4,6 @@ import { NavigationType } from '../../models/NavigationType';
 import { SettingsAtom } from '../../state';
 import { Sorting } from '../Header';
 import { Breadcrumb } from '../Header/Breadcrumb';
-import { Pagination } from '../Header/Pagination';
 
 export interface IMediaHeaderBottomProps { }
 
@@ -19,14 +18,12 @@ export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps>
 
   return (
     <nav
-      className={`w-full flex justify-between py-2 border-b bg-[var(--vscode-sideBar-background)] text-[var(--vscode-sideBar-foreground)] border-[var(--frontmatter-border)]`}
+      className="overflow-x-auto px-4 py-1.5 flex items-center justify-between gap-3 border-b border-[var(--frontmatter-border)]"
       aria-label="Breadcrumb"
     >
       <Breadcrumb />
 
-      <Pagination />
-
-      <div className={`flex px-5 flex-1 justify-end`}>
+      <div className="flex items-center gap-4 flex-shrink-0">
         <Sorting view={NavigationType.Media} disableCustomSorting />
       </div>
     </nav>

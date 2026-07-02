@@ -84,6 +84,7 @@ export const SETTING_MEDIA_CONTENTTYPES = 'media.contentTypes';
 export const SETTING_DASHBOARD_OPENONSTART = 'dashboard.openOnStart';
 export const SETTING_DASHBOARD_CONTENT_TAGS = 'dashboard.content.cardTags';
 export const SETTING_DASHBOARD_CONTENT_PAGINATION = 'dashboard.content.pagination';
+export const SETTING_DASHBOARD_CONTENT_DEFAULTS = 'dashboard.content.defaults';
 
 // Content cards
 export const SETTING_DASHBOARD_CONTENT_CARD_STATE = 'dashboard.content.card.fields.state';
@@ -97,6 +98,7 @@ export const SETTING_DATA_FOLDERS = 'data.folders';
 export const SETTING_DATA_TYPES = 'data.types';
 
 export const SETTING_FILE_PRESERVE_CASING = 'file.preserveCasing';
+export const SETTING_FILE_SLUG_SEPARATOR = 'file.slugSeparator';
 
 export const SETTING_FRAMEWORK_ID = 'framework.id';
 export const SETTING_FRAMEWORK_START = 'framework.startCommand';
@@ -122,6 +124,11 @@ export const SETTING_COPILOT_ENABLED = 'copilot.enabled';
 export const SETTING_LOGGING = 'logging';
 
 export const SETTING_VALIDATION_ENABLED = 'validation.enabled';
+
+export const SETTING_CONTENT_HEALTH_ENABLED = 'contentHealth.enabled';
+export const SETTING_CONTENT_HEALTH_CHECK_EXTERNAL_LINKS = 'contentHealth.checkExternalLinks';
+export const SETTING_CONTENT_HEALTH_FRESHNESS_THRESHOLD = 'contentHealth.freshnessThreshold';
+export const SETTING_CONTENT_HEALTH_MIN_READABILITY = 'contentHealth.minReadability';
 
 /**
  * Project override support

@@ -7,7 +7,7 @@ import {
   PlusIcon,
   VideoCameraIcon,
 } from '@heroicons/react/24/outline';
-import { basename, parse } from 'path';
+import { basename } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -33,6 +33,7 @@ import { Snippet } from '../../../models';
 import useMediaInfo from '../../hooks/useMediaInfo';
 import { ItemSelection } from '../Common/ItemSelection';
 import { FooterActions } from './FooterActions';
+import { cn } from '../../../utils/cn';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -53,19 +54,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
   const { mediaFolder, mediaDetails, isAudio, isImage, isVideo } = useMediaInfo(media);
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
   const relPath = useMemo(() => {
-    if (viewData?.data?.pageBundle && viewData?.data?.filePath) {
-      const articlePath = viewData?.data?.filePath;
-      const articleDir = parse(parseWinPath(articlePath)).dir;
-
-      const mediaPath = parseWinPath(media.fsPath);
-      if (mediaPath.startsWith(articleDir)) {
-        return getRelPath(media.fsPath, undefined, articleDir);
-      }
-    }
     return getRelPath(media.fsPath, settings?.staticFolder, settings?.wsFolder);
-  }, [media.fsPath, settings?.staticFolder, settings?.wsFolder, viewData?.data?.pageBundle, viewData?.data?.filePath]);
+  }, [media.fsPath, settings?.staticFolder, settings?.wsFolder]);
 
   const hasViewData = useMemo(() => {
     return viewData?.data?.filePath !== undefined;
@@ -268,61 +261,61 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className={`group flex flex-col relative shadow-md hover:shadow-xl dark:shadow-none border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`}>
-        <button
-          className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImage ? 'cursor-pointer' : 'cursor-default'} border-b border-[var(--frontmatter-border)]`}
-          onClick={hasViewData ? undefined : openLightbox}
-        >
-          <div
-            className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}
+      <li className={cn("group relative flex flex-col w-full text-left rounded-[9px] overflow-hidden border border-[var(--fm-border)] bg-[var(--fm-surface-2)] shadow-[0_1px_2px_rgba(0,0,0,.3)] hover:border-[var(--fm-border-hi)] hover:shadow-[0_8px_24px_rgba(0,0,0,.35)] transform-gpu hover:-translate-y-0.5 transition duration-150 ease-out", menuOpen && "border-[var(--fm-border-hi)] shadow-[0_8px_24px_rgba(0,0,0,.35)] -translate-y-0.5")}>
+        <div className="relative">
+          <button
+            className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImage ? 'cursor-pointer' : 'cursor-default'} border-b border-[var(--fm-border)]`}
+            onClick={hasViewData ? undefined : openLightbox}
           >
-            {renderMediaIcon}
-          </div>
-          <div
-            className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center group-hover:brightness-75`}
-          >
-            {renderMedia}
-          </div>
-
-          <ItemSelection filePath={media.fsPath} />
-
-          {hasViewData && (
             <div
-              className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center justify-center bg-black bg-opacity-70`}
+              className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}
             >
+              {renderMediaIcon}
+            </div>
+            <div
+              className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center group-hover:brightness-75`}
+            >
+              {renderMedia}
+            </div>
+
+            <ItemSelection filePath={media.fsPath} />
+
+            {hasViewData && (
               <div
-                className={`h-full ${showMediaSnippet ? 'w-1/3' : 'w-full'
-                  } flex items-center justify-center`}
+                className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center justify-center bg-black bg-opacity-70`}
               >
-                <button
-                  title={l10n.t(LocalizationKey.dashboardMediaItemButtomInsertImage)}
-                  className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
-                  onClick={insertIntoArticle}
+                <div
+                  className={`h-full ${showMediaSnippet ? 'w-1/3' : 'w-full'
+                    } flex items-center justify-center`}
                 >
-                  <PlusIcon className={`w-full h-full hover:drop-shadow-md `} aria-hidden="true" />
-                </button>
-              </div>
-              {viewData?.data?.position && mediaSnippets.length > 0 && (
-                <div className={`h-full w-1/3 flex items-center justify-center`}>
                   <button
-                    title={l10n.t(LocalizationKey.dashboardMediaItemButtomInsertSnippet)}
+                    title={l10n.t(LocalizationKey.dashboardMediaItemButtomInsertImage)}
                     className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
-                    onClick={insertSnippet}
+                    onClick={insertIntoArticle}
                   >
-                    <CodeBracketIcon
-                      className={`w-full h-full hover:drop-shadow-md `}
-                      aria-hidden="true"
-                    />
+                    <PlusIcon className={`w-full h-full hover:drop-shadow-md `} aria-hidden="true" />
                   </button>
                 </div>
-              )}
+                {viewData?.data?.position && mediaSnippets.length > 0 && (
+                  <div className={`h-full w-1/3 flex items-center justify-center`}>
+                    <button
+                      title={l10n.t(LocalizationKey.dashboardMediaItemButtomInsertSnippet)}
+                      className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
+                      onClick={insertSnippet}
+                    >
+                      <CodeBracketIcon
+                        className={`w-full h-full hover:drop-shadow-md `}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </div>
+                )}
 
-              <ItemSelection filePath={media.fsPath} />
-            </div>
-          )}
-        </button>
+                <ItemSelection filePath={media.fsPath} />
+              </div>
+            )}
+          </button>
 
-        <div className={`relative py-4 pl-4 pr-12 grow`}>
           <ItemMenu
             media={media}
             relPath={relPath}
@@ -340,41 +333,45 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               action: 'view'
             })}
             processSnippet={processSnippet}
-            onDelete={() => setShowAlert(true)} />
+            onDelete={() => setShowAlert(true)}
+            onMenuOpenChange={setMenuOpen} />
+        </div>
 
-          <p className={`text-sm font-bold pointer-events-none flex items-center break-all text-[var(--frontmatter-text)]`}>
+        <div className="relative flex-1 px-3 pt-3 pb-2 min-h-0 overflow-hidden">
+
+          <p className="text-sm font-semibold pointer-events-none flex items-center break-all text-[var(--fm-text-hi)]">
             {basename(parseWinPath(media.fsPath) || '')}
           </p>
           {!isImage && media.metadata.title && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
-              <b className={`mr-2 text-[var(--frontmatter-text)]`}>
+              <b className="mr-2 text-[var(--fm-text-mid)]">
                 {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--frontmatter-secondary-text)]`}>{media.metadata.title}</span>
+              <span className="block mt-1 text-xs text-[var(--fm-text-lo)]">{media.metadata.title}</span>
             </p>
           )}
           {media.metadata.caption && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
-              <b className={`mr-2 text-[var(--frontmatter-text)]`}>
+              <b className="mr-2 text-[var(--fm-text-mid)]">
                 {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--frontmatter-secondary-text)]`}>{media.metadata.caption}</span>
+              <span className="block mt-1 text-xs text-[var(--fm-text-lo)]">{media.metadata.caption}</span>
             </p>
           )}
           {!media.metadata.caption && media.metadata.alt && (
             <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start`}>
-              <b className={`mr-2 text-[var(--frontmatter-text)]`}>
+              <b className="mr-2 text-[var(--fm-text-mid)]">
                 {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--frontmatter-secondary-text)]`}>{media.metadata.alt}</span>
+              <span className="block mt-1 text-xs text-[var(--fm-text-lo)]">{media.metadata.alt}</span>
             </p>
           )}
           {(media?.size || media?.dimensions) && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
-              <b className={`mr-1 text-[var(--frontmatter-text)]`}>
+              <b className="mr-1 text-[var(--fm-text-mid)]">
                 {l10n.t(LocalizationKey.dashboardMediaCommonSize)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--frontmatter-secondary-text)]`}>
+              <span className="block mt-1 text-xs text-[var(--fm-text-lo)]">
                 {mediaDetails}
               </span>
             </p>
@@ -389,7 +386,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           scripts={settings?.scripts}
           insertIntoArticle={insertIntoArticle}
           insertSnippet={insertSnippet}
-          onDelete={() => setShowAlert(true)} />
+          onDelete={() => setShowAlert(true)}
+          onMenuOpenChange={setMenuOpen} />
       </li>
 
       {showSnippetSelection && (

@@ -98,7 +98,14 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
 
       // Remove the empty fields
       Object.keys(data).forEach((key) => {
-        if (data[key] === undefined || data[key] === null || Object.keys(data[key]).length === 0) {
+        const currentValue = data[key];
+        const isObjectValue =
+          typeof currentValue === 'object' && currentValue !== null;
+        const isEmptyArray = Array.isArray(currentValue) && currentValue.length === 0;
+        const isEmptyObject =
+          isObjectValue && !Array.isArray(currentValue) && Object.keys(currentValue).length === 0;
+
+        if (currentValue === undefined || currentValue === null || isEmptyArray || isEmptyObject) {
           delete data[key];
         }
       });

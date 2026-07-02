@@ -94,25 +94,36 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = () => {
           features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS}
           flag={FEATURE_FLAG.dashboard.snippets.manage}>
           <div
-            className={`py-3 px-4 flex items-center justify-between border-b border-[var(--frontmatter-border)]`}
+            className={`px-4 py-2 flex items-center justify-between gap-4 border-b border-[var(--frontmatter-border)]`}
             aria-label={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsAriaLabel)}
           >
-            <FilterInput
-              placeholder={l10n.t(LocalizationKey.commonSearch)}
-              isReady={true}
-              autoFocus={(snippetKeys && snippetKeys.length > 0)}
-              value={snippetFilter}
-              onChange={(value: string) => setSnippetFilter(value)}
-              onReset={() => setSnippetFilter('')}
-            />
+            <div className="flex flex-col min-w-0">
+              <h1 className="text-lg font-semibold leading-tight" style={{ color: 'var(--fm-text-hi)' }}>
+                {l10n.t(LocalizationKey.dashboardHeaderTabsSnippets)}
+              </h1>
+              {snippetKeys.length > 0 && (
+                <p className="text-xs leading-tight mt-0.5" style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}>
+                  {snippetKeys.length} {snippetKeys.length === 1 ? 'item' : 'items'}
+                </p>
+              )}
+            </div>
 
-            <div className="flex flex-1 justify-end">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <FilterInput
+                placeholder={l10n.t(LocalizationKey.commonSearch)}
+                isReady={true}
+                autoFocus={(snippetKeys && snippetKeys.length > 0)}
+                value={snippetFilter}
+                onChange={(value: string) => setSnippetFilter(value)}
+                onReset={() => setSnippetFilter('')}
+              />
+
               <button
-                className={`inline-flex items-center px-3 py-1 rounded text-xs leading-4 font-medium focus:outline-none text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}
+                className={`inline-flex items-center px-3 py-2 rounded text-sm font-medium focus:outline-none text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}
                 title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsButtonCreate)}
                 onClick={() => setShowCreateDialog(true)}
               >
-                <PlusIcon className={`mr-2 h-6 w-6`} />
+                <PlusIcon className={`mr-2 h-4 w-4`} />
                 <span className={`text-sm`}>
                   {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsButtonCreate)}
                 </span>

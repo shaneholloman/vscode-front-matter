@@ -6,13 +6,14 @@ on:
   workflow_dispatch:
 
 env:
-  PACKAGE_NAME: 'fm-localized'
-  MS_URL: 'https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta'
-  VSX_URL: 'https://open-vsx.org/extension/eliostruyf/vscode-front-matter-beta'
+  PACKAGE_NAME: "fm-localized"
+  MS_URL: "https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-\
+    front-matter-beta"
+  VSX_URL: "https://open-vsx.org/extension/eliostruyf/vscode-front-matter-beta"
 
 jobs:
   localization:
-    name: 'Localization'
+    name: "Localization"
     runs-on: ubuntu-latest
 
     steps:
@@ -27,11 +28,11 @@ jobs:
           PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
 
   release-ms:
-    name: 'Release to VSCode Marketplace'
+    name: "Release to VSCode Marketplace"
     runs-on: ubuntu-latest
     needs: localization
     environment:
-      name: 'MS - BETA'
+      name: "MS - BETA"
       url: ${{ env.MS_URL }}
 
     steps:
@@ -43,7 +44,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install the dependencies
         run: npm ci
@@ -52,14 +53,24 @@ jobs:
         run: node scripts/beta-release.js $GITHUB_RUN_ID
 
       - name: Publish
-        run: npx @vscode/vsce publish -p ${{ secrets.VSCE_PAT }} --baseImagesUrl https://raw.githubusercontent.com/estruyf/vscode-front-matter/dev
+        run: npx @vscode/vsce publish -p ${{ secrets.VSCE_PAT }} --baseImagesUrl
+          https://raw.githubusercontent.com/estruyf/vscode-front-matter/dev
+
+      - name: Package VSIX
+        run: npx @vscode/vsce package
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: vscode-demo-time-alpha.vsix
+          path: "*.vsix"
 
   release-vsx:
-    name: 'Release to Open VSX'
+    name: "Release to Open VSX"
     runs-on: ubuntu-latest
     needs: localization
     environment:
-      name: 'Open VSX - BETA'
+      name: "Open VSX - BETA"
       url: ${{ env.VSX_URL }}
 
     steps:
@@ -71,7 +82,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install the dependencies
         run: npm ci

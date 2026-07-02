@@ -80,12 +80,12 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
   }, [selectedFolder, settings]);
 
   return (
-    <ol role="list" className="flex space-x-2 px-4 flex-1">
+    <ol role="list" className="flex items-center gap-1.5 min-w-0 overflow-x-auto whitespace-nowrap pr-2 flex-1">
       <li className="flex">
         <div className="flex items-center">
           <button
             onClick={() => updateMediaFolder(HOME_PAGE_NAVIGATION_ID)}
-            className={`text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`}
+            className="text-[var(--fm-text-lo)] hover:text-[var(--fm-text-mid)]"
           >
             <HomeIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
             <span className="sr-only">{l10n.t(LocalizationKey.dashboardHeaderBreadcrumbHome)}</span>
@@ -97,7 +97,7 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
         <li key={folder} className="flex">
           <div className="flex items-center">
             <svg
-              className={`flex-shrink-0 h-5 w-5 text-[var(--vscode-tab-inactiveForeground)]`}
+              className="flex-shrink-0 h-5 w-5 text-[var(--fm-text-xlo)]"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -108,7 +108,7 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
 
             <button
               onClick={() => updateMediaFolder(folder)}
-              className={`ml-2 text-sm font-medium text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`}
+              className="ml-1.5 text-sm font-medium text-[var(--fm-text-lo)] hover:text-[var(--fm-text-hi)]"
             >
               {basename(folder)}
             </button>

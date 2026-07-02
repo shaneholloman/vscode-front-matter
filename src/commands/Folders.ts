@@ -518,6 +518,22 @@ export class Folders {
   }
 
   /**
+   * Find folders based on a glob pattern
+   * @param filePath
+   * @returns
+   */
+  public static getRelativePath(filePath: string): string {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (wsFolder) {
+      const relativePath = parseWinPath(
+        relative(parseWinPath(wsFolder.fsPath), parseWinPath(filePath))
+      );
+      return relativePath;
+    }
+    return filePath;
+  }
+
+  /**
    * Retrieve the absolute file path
    * @param filePath
    * @returns

@@ -14,53 +14,73 @@ export interface IFooterActionsProps {
   contentType: string;
   websiteUrl?: string;
   scripts?: CustomScript[];
+  /** Render as an inline icon row without the full-width wrapper bar */
+  compact?: boolean;
+  onMenuOpenChange?: (open: boolean) => void;
 }
 
 export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   filePath,
   contentType,
   websiteUrl,
-  scripts
+  scripts,
+  compact,
+  onMenuOpenChange,
 }: React.PropsWithChildren<IFooterActionsProps>) => {
   const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
 
-  return (
-    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)] rounded-b`}>
-      {/* <ItemSelection filePath={filePath} show /> */}
-
+  const actions = (
+    <>
       <QuickAction
         title={l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}
-        className={`text-[var(--frontmatter-secondary-text)]`}
-        onClick={() => openFile(filePath)}>
+        className={`text-[var(--fm-text-lo)] hover:text-[var(--fm-text-mid)]`}
+        onClick={() => openFile(filePath)}
+      >
         <span className={`sr-only`}>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}</span>
-        <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
+        <EyeIcon className={`w-3.5 h-3.5`} aria-hidden="true" />
       </QuickAction>
 
-      {
-        websiteUrl && (
-          <QuickAction
-            title={l10n.t(LocalizationKey.commonOpenOnWebsite)}
-            className={`text-[var(--frontmatter-secondary-text)]`}
-            onClick={() => openOnWebsite(websiteUrl, filePath)}>
-            <span className={`sr-only`}>{l10n.t(LocalizationKey.commonOpenOnWebsite)}</span>
-            <GlobeEuropeAfricaIcon className={`w-4 h-4`} aria-hidden="true" />
-          </QuickAction>
-        )
-      }
+      {websiteUrl && (
+        <QuickAction
+          title={l10n.t(LocalizationKey.commonOpenOnWebsite)}
+          className={`text-[var(--fm-text-lo)] hover:text-[var(--fm-text-mid)]`}
+          onClick={() => openOnWebsite(websiteUrl, filePath)}
+        >
+          <span className={`sr-only`}>{l10n.t(LocalizationKey.commonOpenOnWebsite)}</span>
+          <GlobeEuropeAfricaIcon className={`w-3.5 h-3.5`} aria-hidden="true" />
+        </QuickAction>
+      )}
 
       <CustomActions
         filePath={filePath}
         contentType={contentType}
         scripts={scripts}
-        showTrigger />
+        showTrigger
+        onMenuOpenChange={onMenuOpenChange}
+      />
 
       <QuickAction
         title={l10n.t(LocalizationKey.commonDelete)}
-        className={`text-[var(--frontmatter-secondary-text)] hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
-        onClick={() => setSelectedItemAction({ path: filePath, action: 'delete' })}>
+        className={`text-[var(--fm-text-lo)] hover:text-[var(--fm-status-danger)]`}
+        onClick={() => setSelectedItemAction({ path: filePath, action: 'delete' })}
+      >
         <span className={`sr-only`}>{l10n.t(LocalizationKey.commonDelete)}</span>
-        <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
+        <TrashIcon className={`w-3.5 h-3.5`} aria-hidden="true" />
       </QuickAction>
+    </>
+  );
+
+  if (compact) {
+    return (
+      <div className={`flex items-center gap-0.5`}>
+        {actions}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)] rounded-b`}>
+      {actions}
     </div>
   );
 };

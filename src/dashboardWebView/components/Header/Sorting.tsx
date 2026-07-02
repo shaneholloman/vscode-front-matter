@@ -13,6 +13,7 @@ import { Sorting as SortingHelpers } from '../../../helpers/Sorting';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
+import { getSortingOptions, resolveSortingOption } from '../../utils';
 
 export interface ISortingProps {
   disableCustomSorting?: boolean;
@@ -23,6 +24,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
   disableCustomSorting,
   view
 }: React.PropsWithChildren<ISortingProps>) => {
+  const DEFAULT_SORT_LABEL = l10n.t(LocalizationKey.dashboardHeaderSortingDefault);
   const [crntSorting, setCrntSorting] = useRecoilState(SortingAtom);
   const searchValue = useRecoilValue(SearchSelector);
   const settings = useRecoilValue(SettingsSelector);
@@ -109,14 +111,20 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
     }
   ];
 
-  const updateSorting = (value: SortingOption) => {
-    Messenger.send(DashboardMessage.setState, {
-      key: `${view === NavigationType.Contents
-        ? ExtensionState.Dashboard.Contents.Sorting
-        : ExtensionState.Dashboard.Media.Sorting
-        }`,
-      value: value
-    });
+  const updateSorting = (value: SortingOption | null) => {
+    if (value === null) {
+      messageHandler.send(DashboardMessage.clearState, {
+        key: view === NavigationType.Media ? ExtensionState.Dashboard.Media.Sorting : ExtensionState.Dashboard.Contents.Sorting
+      });
+    } else {
+      Messenger.send(DashboardMessage.setState, {
+        key: `${view === NavigationType.Contents
+          ? ExtensionState.Dashboard.Contents.Sorting
+          : ExtensionState.Dashboard.Media.Sorting
+          }`,
+        value: value
+      });
+    }
 
     setCrntSorting(value);
   };
@@ -147,50 +155,57 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
   React.useEffect(() => {
     const getSorting = async () => {
       let crntSortingOption = crntSorting;
+      let persistedSorting: SortingOption | null = null;
+
       if (!crntSortingOption) {
         const sortingState = await messageHandler.request<{ key: string; value: SortingOption; }>(DashboardMessage.getState, { key: view === NavigationType.Media ? ExtensionState.Dashboard.Media.Sorting : ExtensionState.Dashboard.Contents.Sorting });
-        crntSortingOption = sortingState?.value || null;
-
-        if (crntSortingOption === null) {
-          if (view === NavigationType.Contents && settings?.dashboardState.contents.defaultSorting) {
-            crntSortingOption =
-              allOptions.find((f) => f.id === settings?.dashboardState.contents.defaultSorting) || null;
-          } else if (
-            view === NavigationType.Media &&
-            settings?.dashboardState.media.defaultSorting
-          ) {
-            crntSortingOption =
-              allOptions.find((f) => f.id === settings?.dashboardState.media.defaultSorting) || null;
-          }
-        }
+        persistedSorting = sortingState?.value || null;
       }
 
-      const sort = allOptions.find((x) => x.id === crntSortingOption?.id) || sortOptions[0];
+      crntSortingOption = resolveSortingOption({
+        currentSorting: crntSortingOption,
+        persistedSorting,
+        settings: settings || null,
+        view,
+        allOptions: getSortingOptions(view, settings?.customSorting, disableCustomSorting)
+      });
+
+      if (!crntSorting && crntSortingOption && persistedSorting === null) {
+        setCrntSorting(crntSortingOption);
+      }
+
+      const sort = crntSortingOption
+        ? allOptions.find((x) => x.id === crntSortingOption?.id) || sortOptions[0]
+        : null;
       setCrntSort(sort);
     };
 
     getSorting();
   }, [crntSorting]);
 
-  if (crntSort === null) {
-    return null;
-  }
-
   return (
     <DropdownMenu>
       <MenuButton
         label={l10n.t(LocalizationKey.dashboardHeaderSortingLabel)}
-        title={crntSort?.title || crntSort?.name || ''}
+        title={crntSort?.title || crntSort?.name || DEFAULT_SORT_LABEL}
         disabled={!!searchValue}
+        isActive={crntSorting !== null}
       />
 
       <DropdownMenuContent>
+        <MenuItem
+          title={DEFAULT_SORT_LABEL}
+          value={null}
+          isCurrent={crntSorting === null}
+          onClick={() => updateSorting(null)}
+        />
+
         {allOptions.map((option) => (
           <MenuItem
             key={option.id}
             title={option.title || option.name}
             value={option}
-            isCurrent={option.id === crntSort.id}
+            isCurrent={crntSorting !== null && option.id === crntSort?.id}
             onClick={(value) => updateSorting(value)}
           />
         ))}

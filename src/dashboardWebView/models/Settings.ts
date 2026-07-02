@@ -66,6 +66,12 @@ export interface DashboardState {
   welcome: WelcomeViewState;
 }
 
+export interface ContentDefaults {
+  sorting?: string;
+  grouping?: string;
+  filters?: { [key: string]: string };
+}
+
 export interface ContentsViewState {
   sorting: SortingOption | null | undefined;
   defaultSorting: string | null | undefined;
@@ -73,6 +79,7 @@ export interface ContentsViewState {
   templatesEnabled: boolean | null | undefined;
   pagination: boolean | number | null | undefined;
   cardFields: CardFields;
+  defaults?: ContentDefaults;
 }
 
 export interface CardFields {

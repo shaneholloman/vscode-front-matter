@@ -32,12 +32,14 @@ import {
   SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION,
   SETTING_WEBSITE_URL,
   SETTING_MEDIA_CONTENTTYPES,
-  SETTING_PANEL_OPEN_ON_SUPPORTED_FILE
+  SETTING_PANEL_OPEN_ON_SUPPORTED_FILE,
+  SETTING_DASHBOARD_CONTENT_DEFAULTS
 } from '../constants';
 import {
   DashboardViewType,
   SortingOption,
-  Settings as ISettings
+  Settings as ISettings,
+  ContentDefaults
 } from '../dashboardWebView/models';
 import {
   CustomScript,
@@ -143,7 +145,8 @@ export class DashboardSettings {
               date: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_DATE),
               title: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_TITLE),
               description: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION)
-            }
+            },
+            defaults: Settings.get<ContentDefaults>(SETTING_DASHBOARD_CONTENT_DEFAULTS)
           },
           media: {
             sorting: await ext.getState<SortingOption | undefined>(

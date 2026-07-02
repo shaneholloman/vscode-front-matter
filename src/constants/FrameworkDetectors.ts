@@ -35,7 +35,7 @@ export const FrameworkDetectors = [
       build: 'hugo',
       server: 'http://localhost:1313'
     },
-    requiredFiles: ['config.toml', 'config.yaml', 'config.yml'],
+    requiredFiles: ['hugo.toml', 'hugo.yaml', 'hugo.yml', 'hugo.json', 'config.toml', 'config.yaml', 'config.yml'],
     commands: {
       start: 'hugo server -D'
     }

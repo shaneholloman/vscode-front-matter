@@ -11,12 +11,14 @@ export interface ICustomActionsProps {
   filePath: string;
   scripts?: CustomScript[];
   showTrigger?: boolean;
+  onMenuOpenChange?: (open: boolean) => void;
 }
 
 export const CustomActions: React.FunctionComponent<ICustomActionsProps> = ({
   filePath,
   scripts,
   showTrigger = false,
+  onMenuOpenChange,
 }: React.PropsWithChildren<ICustomActionsProps>) => {
 
   const customActions = React.useMemo(() => {
@@ -27,7 +29,7 @@ export const CustomActions: React.FunctionComponent<ICustomActionsProps> = ({
           key={script.title}
           onClick={() => runCustomScript(script, filePath)}
         >
-          <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+          <CommandLineIcon className="h-4 w-4" aria-hidden={true} />
           <span>{script.title}</span>
         </DropdownMenuItem>
       ));
@@ -39,7 +41,7 @@ export const CustomActions: React.FunctionComponent<ICustomActionsProps> = ({
 
   if (showTrigger) {
     return (
-      <DropdownMenu>
+      <DropdownMenu onOpenChange={onMenuOpenChange}>
         <DropdownMenuTrigger
           title={l10n.t(LocalizationKey.commonOpenCustomActions)}
           className='px-2 text-[var(--frontmatter-secondary-text)] hover:text-[var(--frontmatter-button-hoverBackground)] focus-visible:outline-none'>

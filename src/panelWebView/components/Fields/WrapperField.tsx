@@ -128,7 +128,12 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       }).then((data) => {
         if (data.field === field.name) {
           setFieldValue(data.value);
-          onSendUpdate(field.name, data.value, parentFields);
+          // Only write back if the placeholder was actually resolved to something different,
+          // otherwise values like Hugo shortcodes ({{%...%}}) that contain {{ }} but are
+          // not FM placeholders would cause an infinite update loop.
+          if (data.value !== value) {
+            onSendUpdate(field.name, data.value, parentFields);
+          }
         }
       }).catch((err) => {
         console.error(err);
@@ -418,7 +423,21 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else if (field.type === 'fields') {
-    if (field.fields && parent) {
+    let fieldsToRender = field.fields;
+
+    if ((!fieldsToRender || fieldsToRender.length === 0) && field.fieldGroup && settings.fieldGroups) {
+      const groupIds = Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
+
+      for (const groupId of groupIds) {
+        const fieldGroup = settings.fieldGroups.find((group) => group.id === groupId);
+        if (fieldGroup?.fields && fieldGroup.fields.length > 0) {
+          fieldsToRender = fieldGroup.fields;
+          break;
+        }
+      }
+    }
+
+    if (fieldsToRender && parent) {
       if (!parent[field.name]) {
         parent[field.name] = {};
       }
@@ -439,7 +458,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
             )}
 
             {renderFields(
-              field.fields,
+              fieldsToRender,
               subMetadata,
               [...parentFields, field.name],
               blockData,
@@ -497,6 +516,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           dataFileId={field.dataFileId}
           dataFileKey={field.dataFileKey}
           dataFileValue={field.dataFileValue}
+          dataFileAdditionalFields={field.dataFileAdditionalFields}
           selected={fieldValue as string}
           required={!!field.required}
           multiSelect={field.multiple}

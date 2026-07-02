@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { MenuButton, MenuItem } from '../Menu';
 import * as l10n from '@vscode/l10n';
-import { FunnelIcon } from '@heroicons/react/24/solid';
 import { LocalizationKey } from '../../../localization';
 import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
 
@@ -27,13 +26,9 @@ export const Filter: React.FunctionComponent<IFilterProps> = ({
   return (
     <DropdownMenu>
       <MenuButton
-        label={
-          <>
-            <FunnelIcon className={`inline-block w-4 h-4 mr-2`} />
-            <span>{label}</span>
-          </>
-        }
+        label={label}
         title={activeItem || DEFAULT_VALUE}
+        isActive={!!activeItem}
       />
 
       <DropdownMenuContent>

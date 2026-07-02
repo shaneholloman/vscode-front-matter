@@ -26,19 +26,21 @@ export const PaginationStatus: React.FunctionComponent<IPaginationStatusProps> =
     if (totalItems < items) {
       return totalItems;
     }
-    return totalItems;
+    return items;
   }, [page, totalMedia, pageSetNr]);
 
   return (
     <div className="hidden sm:flex">
-      <p className={`text-sm text-[var(--vscode-tab-inactiveForeground)]`}>
-        {
-          l10n.t(LocalizationKey.dashboardHeaderPaginationStatusText,
-            (page * pageSetNr + 1),
-            totelItemsOnPage,
-            totalItems
-          )
-        }
+      <p
+        className={`text-xs`}
+        style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}
+      >
+        {l10n.t(
+          LocalizationKey.dashboardHeaderPaginationStatusText,
+          page * pageSetNr + 1,
+          totelItemsOnPage,
+          totalItems
+        )}
       </p>
     </div>
   );

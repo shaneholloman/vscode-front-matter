@@ -48,7 +48,11 @@ export const Grouping: React.FunctionComponent<
 
   return (
     <DropdownMenu>
-      <MenuButton label={localize(LocalizationKey.dashboardHeaderGroupingMenuButtonLabel)} title={crntGroup?.name || ''} />
+      <MenuButton
+        label={localize(LocalizationKey.dashboardHeaderGroupingMenuButtonLabel)}
+        title={crntGroup?.name || ''}
+        isActive={!!group && group !== GroupOption.none}
+      />
 
       <DropdownMenuContent>
         {GROUP_OPTIONS.map((option) => (

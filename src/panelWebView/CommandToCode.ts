@@ -45,9 +45,12 @@ export enum CommandToCode {
   copilotSuggestTitle = 'copilot-suggest-title',
   copilotSuggestDescription = 'copilot-suggest-description',
   copilotSuggestTaxonomy = 'copilot-suggest-taxonomy',
+  copilotOptimizeAvgSentence = 'copilot-optimize-avg-sentence',
+  copilotOptimizeAvgWord = 'copilot-optimize-avg-word',
   searchByType = 'search-by-type',
   processMediaData = 'process-media-data',
   isServerStarted = 'is-server-started',
   runFieldAction = 'run-field-action',
-  smartRename = 'smart-rename'
+  smartRename = 'smart-rename',
+  selectInDocument = 'select-in-document'
 }

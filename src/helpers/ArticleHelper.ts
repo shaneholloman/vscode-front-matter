@@ -10,6 +10,7 @@ import {
   SETTING_CONTENT_PLACEHOLDERS,
   SETTING_CONTENT_SUPPORTED_FILETYPES,
   SETTING_FILE_PRESERVE_CASING,
+  SETTING_FILE_SLUG_SEPARATOR,
   SETTING_COMMA_SEPARATED_FIELDS,
   SETTING_DATE_FIELD,
   SETTING_DATE_FORMAT,
@@ -255,18 +256,14 @@ export class ArticleHelper {
 
     const article = await ArticleHelper.getFrontMatterByPath(filePath);
     if (!article || !article.data) {
-      Notifications.error(
-        l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError)
-      );
+      Notifications.error(l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError));
       return;
     }
 
     const titleField = getTitleField();
     const title: string = article.data[titleField];
     if (!title) {
-      Notifications.warning(
-        l10n.t(LocalizationKey.commandsArticleSmartRenameUnableToGenerate)
-      );
+      Notifications.warning(l10n.t(LocalizationKey.commandsArticleSmartRenameUnableToGenerate));
       return;
     }
 
@@ -303,9 +300,7 @@ export class ArticleHelper {
       const currentFolderName = parseFile(folderPath).base;
 
       if (currentFolderName === newFileName) {
-        Notifications.info(
-          l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync)
-        );
+        Notifications.info(l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync));
         return;
       }
 
@@ -322,11 +317,7 @@ export class ArticleHelper {
       });
 
       Notifications.info(
-        l10n.t(
-          LocalizationKey.commandsArticleSmartRenameSuccess,
-          currentFolderName,
-          newFileName
-        )
+        l10n.t(LocalizationKey.commandsArticleSmartRenameSuccess, currentFolderName, newFileName)
       );
     } else {
       // For regular files, rename the file
@@ -340,9 +331,7 @@ export class ArticleHelper {
       }
 
       if (parsed.base === newFileBase) {
-        Notifications.info(
-          l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync)
-        );
+        Notifications.info(l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync));
         return;
       }
 
@@ -367,11 +356,7 @@ export class ArticleHelper {
       });
 
       Notifications.info(
-        l10n.t(
-          LocalizationKey.commandsArticleSmartRenameSuccess,
-          parsed.base,
-          newFileBase
-        )
+        l10n.t(LocalizationKey.commandsArticleSmartRenameSuccess, parsed.base, newFileBase)
       );
     }
   }
@@ -660,7 +645,9 @@ export class ArticleHelper {
    */
   public static sanitize(value: string): string {
     const preserveCasing = Settings.get(SETTING_FILE_PRESERVE_CASING) as boolean;
-    return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, '-'));
+    const separator = (Settings.get(SETTING_FILE_SLUG_SEPARATOR) as string) || '-';
+    const sanitized = sanitize(preserveCasing ? value : value.toLowerCase());
+    return sanitized.replace(/ /g, separator);
   }
 
   /**
@@ -959,17 +946,19 @@ export class ArticleHelper {
         .filter((node) => node.type === 'link')
         .map((node) => (node as Link).url);
 
-      const internalLinks = links.filter(
+      const internalLinkUrls = links.filter(
         (link) =>
           !link.startsWith('http') ||
           (baseUrl && link.toLowerCase().includes((baseUrl || '').toLowerCase()))
-      ).length;
-      let externalLinks = links.filter((link) => link.startsWith('http'));
+      );
+      const internalLinks = internalLinkUrls.length;
+      let externalLinksList = links.filter((link) => link.startsWith('http'));
       if (baseUrl) {
-        externalLinks = externalLinks.filter(
+        externalLinksList = externalLinksList.filter(
           (link) => !link.toLowerCase().includes(baseUrl.toLowerCase())
         );
       }
+      const externalLinkUrls = externalLinksList;
 
       const headers = [];
       for (const header of headings) {
@@ -1005,7 +994,9 @@ export class ArticleHelper {
         paragraphs,
         images,
         internalLinks,
-        externalLinks: externalLinks.length,
+        internalLinkUrls,
+        externalLinks: externalLinkUrls.length,
+        externalLinkUrls,
         wordCount,
         content: article.content,
         firstParagraph

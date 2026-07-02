@@ -211,6 +211,7 @@
   "dashboard.header.sorting.alt.asc": "Alt (asc)",
   "dashboard.header.sorting.alt.desc": "Alt (desc)",
   "dashboard.header.sorting.label": "Sort by",
+  "dashboard.header.sorting.default": "Default",
 
   "dashboard.header.startup.label": "Open on startup?",
 
@@ -523,6 +524,32 @@
   "panel.seoStatus.required": "{0} or {1} is required.",
 
   "panel.slugAction.title": "Optimize slug",
+  "panel.contentHealth.readability.copilot.optimizeSentence": "Optimize average sentence length with Copilot",
+  "panel.contentHealth.readability.copilot.optimizeWord": "Optimize average word complexity with Copilot",
+  "panel.contentHealth.readability.hint.sentence": "Split long sentences to boost the score.",
+  "panel.contentHealth.readability.hint.word": "Replace multi-syllable words with simpler alternatives.",
+  "panel.contentHealth.title": "Content Health",
+  "panel.contentHealth.noIssues": "No content health issues found.",
+  "panel.contentHealth.checking": "Analyzing content health...",
+  "panel.contentHealth.readability.label": "Readability",
+  "panel.contentHealth.readability.level.veryEasy": "Very Easy",
+  "panel.contentHealth.readability.level.easy": "Easy",
+  "panel.contentHealth.readability.level.standard": "Standard",
+  "panel.contentHealth.readability.level.difficult": "Difficult",
+  "panel.contentHealth.readability.level.veryDifficult": "Very Difficult",
+  "panel.contentHealth.readability.belowThreshold": "(below threshold - {0})",
+  "panel.contentHealth.readability.avgSentence": "Avg sentence",
+  "panel.contentHealth.readability.avgWord": "Avg word",
+  "panel.contentHealth.readability.words": "{0} words",
+  "panel.contentHealth.readability.syllables": "{0} syllables",
+  "panel.contentHealth.readability.target": "(target <= {0})",
+  "panel.contentHealth.freshness.label": "Freshness",
+  "panel.contentHealth.freshness.daysOld": "{0} days old - consider refreshing",
+  "panel.contentHealth.brokenExternalLinks": "Broken external links",
+  "panel.contentHealth.link.status.valid": "Link is valid",
+  "panel.contentHealth.link.status.broken": "Broken link",
+  "panel.contentHealth.selectInDocument": "Select in document: {0}",
+  "panel.contentHealth.link.notFound": "(not found)",
 
   "panel.smartRenameAction.title": "Smart rename",
 
@@ -811,7 +838,8 @@
   "listeners.panel.dataListener.createDataFile.inputTitle": "What is the name of the data file?",
   "listeners.panel.dataListener.createDataFile.error": "No data file id or path defined.",
   "listeners.panel.dataListener.createDataFile.noFileName": "No filename provided.",
-
+  "listeners.panel.dataListener.copilotOptimizeReadability.noActiveArticle": "No active article found.",
+  "listeners.panel.dataListener.copilotOptimizeReadability.noArticleContent": "No article content found.",
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "No active editor",
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noData.error": "No article data",
 

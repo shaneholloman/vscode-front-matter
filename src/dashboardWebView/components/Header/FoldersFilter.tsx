@@ -26,7 +26,11 @@ export const FoldersFilter: React.FunctionComponent<
 
   return (
     <DropdownMenu>
-      <MenuButton label={l10n.t(LocalizationKey.dashboardHeaderFoldersMenuButtonShowing)} title={crntFolder || DEFAULT_TYPE} />
+      <MenuButton
+        label={l10n.t(LocalizationKey.dashboardHeaderFoldersMenuButtonShowing)}
+        title={crntFolder || DEFAULT_TYPE}
+        isActive={!!crntFolder}
+      />
 
       <DropdownMenuContent>
         <MenuItem

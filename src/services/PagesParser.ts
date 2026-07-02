@@ -229,7 +229,7 @@ export class PagesParser {
         fmFolder: folderTitle,
         fmFilePath: filePath,
         fmRelFileWsPath: FilesHelper.absToRelPath(filePath),
-        fmRelFilePath: parseWinPath(filePath).replace(wsFolder?.fsPath || '', ''),
+        fmRelFilePath: parseWinPath(filePath).replace(parseWinPath(wsFolder?.fsPath) || '', ''),
         fmFileName: fileName,
         fmDraft: await ContentType.getDraftStatus(article),
         fmModified: modifiedFieldValue ? modifiedFieldValue : fileMtime,

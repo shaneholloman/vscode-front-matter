@@ -17,6 +17,12 @@ import { Alert } from '../Modals/Alert';
 import { MoveFileDialog } from '../Modals/MoveFileDialog';
 import { LocalizationKey } from '../../../localization';
 import { deletePage } from '../../utils';
+import { GroupOption } from '../../constants/GroupOption';
+import { GroupingSelector, ViewSelector } from '../../state';
+import usePagination from '../../hooks/usePagination';
+import { DashboardViewType } from '../../models';
+import { Pagination } from '../Header/Pagination';
+import { PaginationStatus } from '../Header/PaginationStatus';
 
 export interface IContentsProps {
   pages: Page[];
@@ -27,13 +33,21 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
 }: React.PropsWithChildren<IContentsProps>) => {
   const loading = useRecoilValue(LoadingAtom);
   const settings = useRecoilValue(SettingsSelector);
+  const grouping = useRecoilValue(GroupingSelector);
+  const view = useRecoilValue(ViewSelector);
   const { pageItems } = usePages(pages);
+  const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
   const [showDeletionAlert, setShowDeletionAlert] = React.useState(false);
   const [showMoveDialog, setShowMoveDialog] = React.useState(false);
   const [page, setPage] = useState<Page | undefined>(undefined);
   const [selectedItemAction, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
 
   const pageFolders = [...new Set(pageItems.map((page) => page.fmFolder))];
+  const showFooterPagination =
+    grouping === GroupOption.none &&
+    view !== DashboardViewType.Structure &&
+    pageSetNr > 0 &&
+    pageItems.length > pageSetNr;
 
   const onDismiss = useCallback(() => {
     setShowMoveDialog(false);
@@ -100,6 +114,12 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
           beta={settings?.beta}
           version={settings?.versionInfo}
           isBacker={settings?.isBacker}
+          topContent={showFooterPagination ? (
+            <div className='flex items-center justify-between gap-2'>
+              <PaginationStatus totalPages={pageItems.length} />
+              <Pagination totalPages={pageItems.length} />
+            </div>
+          ) : undefined}
         />
 
         <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=content" alt="Content metrics" />

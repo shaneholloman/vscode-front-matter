@@ -5,6 +5,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   LoadingAtom,
   MediaFoldersAtom,
+  MediaTotalSelector,
   PagedItems,
   SelectedMediaFolderAtom,
   SettingsSelector,
@@ -22,6 +23,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { FolderItem } from './FolderItem';
 import useMedia from '../../hooks/useMedia';
+import usePagination from '../../hooks/usePagination';
 import { STATIC_FOLDER_PLACEHOLDER, } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { parseWinPath } from '../../../helpers/parseWinPath';
@@ -32,6 +34,8 @@ import { LocalizationKey } from '../../../localization';
 import { MediaItemPanel } from './MediaItemPanel';
 import { FilesProvider } from '../../providers/FilesProvider';
 import { SortOption } from '../../constants/SortOption';
+import { Pagination } from '../Header/Pagination';
+import { PaginationStatus } from '../Header/PaginationStatus';
 
 export interface IMediaProps { }
 
@@ -44,6 +48,9 @@ export const Media: React.FunctionComponent<IMediaProps> = () => {
   const loading = useRecoilValue(LoadingAtom);
   const crntSorting = useRecoilValue(SortingAtom);
   const [, setPagedItems] = useRecoilState(PagedItems);
+  const totalMedia = useRecoilValue(MediaTotalSelector);
+  const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
+  const showFooterPagination = totalMedia > pageSetNr;
 
   const currentStaticFolder = useMemo(() => {
     if (settings?.staticFolder) {
@@ -278,6 +285,12 @@ export const Media: React.FunctionComponent<IMediaProps> = () => {
           beta={settings?.beta}
           version={settings?.versionInfo}
           isBacker={settings?.isBacker}
+          topContent={showFooterPagination ? (
+            <div className='flex items-center justify-between gap-2'>
+              <PaginationStatus />
+              <Pagination />
+            </div>
+          ) : undefined}
         />
 
         <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=media" alt="Media metrics" />

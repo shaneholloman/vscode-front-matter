@@ -43,6 +43,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   });
 
   const isSelected = useMemo(() => selectedFiles.includes(pageData.fmFilePath), [selectedFiles, pageData.fmFilePath]);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [tagsExpanded, setTagsExpanded] = React.useState(false);
 
   const onOpenFile = React.useCallback(() => {
     openFile(pageData.fmFilePath);
@@ -83,9 +85,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       statusHtml ? (
         <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
       ) : (
-        cardFields?.state && draftField && draftField.name && typeof pageData[draftField.name] !== "undefined" ? <Status draft={pageData[draftField.name]} published={pageData.fmPublished} /> : null
+        cardFields?.state && draftField && draftField.name && typeof pageData[draftField.name] !== 'undefined'
+          ? <Status draft={pageData[draftField.name]} published={pageData.fmPublished} />
+          : null
       )
-    )
+    );
   }, [statusHtml, cardFields?.state, draftField, pageData]);
 
   const datePlaceholder = useMemo(() => {
@@ -95,60 +99,64 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
     return (
       dateHtml ? (
-        <div className='mr-6' dangerouslySetInnerHTML={{ __html: dateHtml }} />
+        <div dangerouslySetInnerHTML={{ __html: dateHtml }} />
       ) : (
-        cardFields?.date && pageData.date ? <DateField className={`mr-6`} value={pageData.date} format={pageData.fmDateFormat} /> : null
+        cardFields?.date && pageData.date
+          ? <DateField value={pageData.date} format={pageData.fmDateFormat} />
+          : null
       )
-    )
+    );
   }, [dateHtml, cardFields?.date, pageData]);
-
-  const hasDraftOrDate = useMemo(() => {
-    return cardFields && (cardFields.state || cardFields.date);
-  }, [cardFields]);
 
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">
         <div
-          className={cn(`group flex flex-col items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`, isSelected && `border-[var(--frontmatter-border-active)]`)}
+          className={cn(
+            `group flex flex-col w-full text-left`,
+            `min-h-[342px] h-full`,
+            `rounded-[9px]`,
+            `overflow-hidden`,
+            `border`,
+            `shadow-[0_1px_2px_rgba(0,0,0,.3)]`,
+            `hover:shadow-[0_8px_24px_rgba(0,0,0,.35)]`,
+            `transform-gpu`,
+            `hover:-translate-y-0.5`,
+            `transition duration-150 ease-out`,
+            menuOpen && `shadow-[0_8px_24px_rgba(0,0,0,.35)] -translate-y-0.5`,
+            isSelected
+              ? `border-[var(--fm-accent-line)]`
+              : cn(`border-[var(--fm-border)] hover:border-[var(--fm-border-hi)]`, menuOpen && `border-[var(--fm-border-hi)]`)
+          )}
+          style={{ backgroundColor: 'var(--fm-surface-2)' }}
         >
-          <button
-            title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-            onClick={onOpenFile}
-            className={`relative rounded-t h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]`}
-          >
-            {
-              imageHtml ?
-                <div className="h-full w-full" dangerouslySetInnerHTML={{ __html: imageHtml }} /> :
-                pageData[PREVIEW_IMAGE_FIELD] ? (
-                  <img
-                    src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
-                    alt={escapedTitle || ""}
-                    className="absolute inset-0 h-full w-full object-cover object-left-top group-hover:brightness-75"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div
-                    className={`h-full flex items-center justify-center bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]`}
-                  >
-                    <MarkdownIcon className={`h-32 text-[var(--vscode-sideBarTitle-foreground)] opacity-80`} />
-                  </div>
-                )
-            }
-          </button>
-
-          <ItemSelection filePath={pageData.fmFilePath} />
-
-          <div className="relative p-4 w-full grow">
-            {
-              (statusPlaceholder || datePlaceholder) && (
-                <div className={`space-y-2 ${hasDraftOrDate ? `mb-2` : ``}`}>
-                  <div>{statusPlaceholder}</div>
-                  <div>{datePlaceholder}</div>
+          {/* ── Cover ─────────────────────────────────────────── */}
+          <div className={`relative h-[120px] flex-shrink-0 overflow-hidden rounded-t-[9px]`}>
+            <button
+              title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
+              onClick={onOpenFile}
+              className={`absolute inset-0 cursor-pointer`}
+            >
+              {imageHtml ? (
+                <div className="h-full w-full" dangerouslySetInnerHTML={{ __html: imageHtml }} />
+              ) : pageData[PREVIEW_IMAGE_FIELD] ? (
+                <img
+                  src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
+                  alt={escapedTitle || ''}
+                  className="absolute inset-0 h-full w-full object-cover object-left-top group-hover:brightness-75 transition-[filter] duration-150"
+                  loading="lazy"
+                />
+              ) : (
+                <div
+                  className={`h-full flex items-center justify-center`}
+                  style={{ backgroundColor: 'var(--fm-surface-3)' }}
+                >
+                  <MarkdownIcon className={`h-24 opacity-20 text-[var(--fm-text-mid)]`} />
                 </div>
-              )
-            }
+              )}
+            </button>
 
+            {/* ⋮ context menu — comes after the button in DOM so it receives pointer events */}
             <ContentActions
               path={pageData.fmFilePath}
               relPath={pageData.fmRelFileWsPath}
@@ -158,62 +166,102 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               translations={pageData.fmTranslations}
               scripts={settings?.scripts}
               onOpen={onOpenFile}
+              onMenuOpenChange={setMenuOpen}
             />
+          </div>
 
+          {/* Checkbox — absolutely positioned to li.relative, appears in cover area */}
+          <ItemSelection filePath={pageData.fmFilePath} />
+
+          {/* ── Body ──────────────────────────────────────────── */}
+          <div className={`flex flex-col flex-1 px-3 pt-3 pb-1 min-h-0 gap-1 ${tagsExpanded ? '' : 'overflow-hidden'}`}>
             <I18nLabel page={pageData} />
 
+            {/* Status dot + date row */}
+            {(statusPlaceholder || datePlaceholder) && (
+              <div className="flex items-center justify-between gap-2 mb-2 flex-shrink-0">
+                <div>{statusPlaceholder}</div>
+                <div>{datePlaceholder}</div>
+              </div>
+            )}
+
+            {/* Title — hero text */}
             <button
               title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
               onClick={onOpenFile}
-              className={`text-left block`}>
-              {
-                titleHtml ? (
-                  <div dangerouslySetInnerHTML={{ __html: titleHtml }} />
-                ) : (
-                  <h2 className="font-bold">
-                    <span>{escapedTitle}</span>
-                  </h2>
-                )
-              }
+              className={`text-left flex-shrink-0 mb-1`}
+            >
+              {titleHtml ? (
+                <div dangerouslySetInnerHTML={{ __html: titleHtml }} />
+              ) : (
+                <h2
+                  className="text-[15px] font-semibold leading-snug line-clamp-2"
+                  style={{ color: 'var(--fm-text-hi)', fontWeight: 650 }}
+                >
+                  {escapedTitle}
+                </h2>
+              )}
             </button>
 
-            {
-              (escapedDescription || descriptionHtml) && (
-                <button
-                  title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-                  onClick={onOpenFile}
-                  className={`mt-2 text-left block`}>
-                  {
-                    descriptionHtml ? (
-                      <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-                    ) : (
-                      <p className={`text-xs text-[var(--frontmatter-secondary-text)]`}>{escapedDescription}</p>
-                    )
-                  }
-                </button>
-              )
-            }
+            {/* Description */}
+            {(escapedDescription || descriptionHtml) && (
+              <button
+                title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
+                onClick={onOpenFile}
+                className={`text-left flex-shrink-0`}
+              >
+                {descriptionHtml ? (
+                  <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+                ) : (
+                  <p className={`text-xs line-clamp-2`} style={{ color: 'var(--fm-text-mid)' }}>
+                    {escapedDescription}
+                  </p>
+                )}
+              </button>
+            )}
 
-            {
-              tagsHtml ? (
-                <div className="mt-2" dangerouslySetInnerHTML={{ __html: tagsHtml }} />
-              ) : (
-                <Tags values={tags} tagField={settings?.dashboardState?.contents?.tags} />
-              )
-            }
+            {/* Spacer pushes tags to bottom of body */}
+            <div className="flex-1" />
+
+            {/* Tags — single row, no wrap */}
+            {tagsHtml ? (
+              <div dangerouslySetInnerHTML={{ __html: tagsHtml }} />
+            ) : (
+              <Tags values={tags} tagField={settings?.dashboardState?.contents?.tags} onExpandChange={setTagsExpanded} />
+            )}
+
+            {/* Optional custom metadata from extensibility */}
+            {footerHtml && (
+              <div
+                className="mt-2 min-w-0 text-[0.7rem] leading-none overflow-hidden whitespace-nowrap"
+                style={{ color: 'var(--fm-text-lo)', fontFamily: 'var(--fm-mono)' }}
+              >
+                <div
+                  className="placeholder__card__footer"
+                  style={{ display: 'block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  dangerouslySetInnerHTML={{ __html: footerHtml }}
+                />
+              </div>
+            )}
           </div>
 
-          {
-            footerHtml && (
-              <div className="placeholder__card__footer p-4 w-full" dangerouslySetInnerHTML={{ __html: footerHtml }} />
-            )
-          }
-
-          <FooterActions
-            filePath={pageData.fmFilePath}
-            contentType={pageData.fmContentType}
-            websiteUrl={settings?.websiteUrl}
-            scripts={settings?.scripts} />
+          {/* ── Footer ────────────────────────────────────────── */}
+          <div
+            className="flex items-center justify-end gap-2 px-3 py-2 flex-shrink-0 rounded-b-[9px] overflow-hidden"
+            style={{ borderTop: '1px solid var(--fm-border)' }}
+          >
+            {/* Right: quick actions — fade in on hover */}
+            <div className={cn("shrink-0 opacity-40 group-hover:opacity-100 transition-opacity duration-150", menuOpen && "opacity-100")}>
+              <FooterActions
+                filePath={pageData.fmFilePath}
+                contentType={pageData.fmContentType}
+                websiteUrl={settings?.websiteUrl}
+                scripts={settings?.scripts}
+                compact
+                onMenuOpenChange={setMenuOpen}
+              />
+            </div>
+          </div>
         </div>
       </li>
     );
@@ -221,9 +269,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return (
       <li className="relative">
         <div
-          className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 border-[var(--frontmatter-border)] hover:bg-[var(--vscode-sideBar-background)]`}
+          className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70`}
+          style={{
+            borderColor: 'var(--fm-border)',
+            backgroundColor: 'transparent'
+          }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLDivElement).style.backgroundColor = 'var(--fm-surface-3)')}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent')}
         >
-          <div className="col-span-8 font-bold truncate flex items-center space-x-4">
+          <div className="col-span-8 truncate flex items-center space-x-4" style={{ color: 'var(--fm-text-hi)', fontWeight: 600 }}>
             <ItemSelection filePath={pageData.fmFilePath} show />
 
             <button
@@ -241,7 +295,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               listView
             />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-2" style={{ fontFamily: 'var(--fm-mono)', fontSize: '0.75rem', color: 'var(--fm-text-lo)' }}>
             <DateField value={pageData.date} />
           </div>
           <div className="col-span-2">
